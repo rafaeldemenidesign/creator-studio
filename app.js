@@ -176,82 +176,155 @@ const inputs = {
 
 // --- INITIALIZATION ---
 function init() {
-    checkUserLogin();
+    initFirebase(); // New Auth Entry Point
     setupEventListeners();
-    // Default values if logged in
-    if (appState.user) {
-        views.signup.classList.add('hidden');
-        views.home.classList.remove('hidden');
-    }
 }
 
-// --- USER & SIGNUP LOGIC ---
+// --- USER & AUTH LOGIC (FIREBASE) ---
 
+let auth, db;
 let isLoginMode = false;
-let validationData = null; // Store check result
+
+// Initialize Firebase dynamically to keep app.js as global script
+async function initFirebase() {
+    try {
+        // Import Config
+        const module = await import('./firebase-config.js');
+        auth = module.auth;
+        db = module.db;
+
+        // Import Auth Functions
+        const { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+        const { doc, setDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+
+        console.log("🔥 Firebase Initialized");
+
+        // Session Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log("✅ User Logged In:", user.email);
+                appState.user = {
+                    uid: user.uid,
+                    name: user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    avatar: user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || 'User'}&background=6366f1&color=fff`,
+                    username: user.email.split('@')[0].replace(/[^a-z0-9]/g, '') // fallback slug
+                };
+
+                // Fetch extra profile data (CPF, custom slug)
+                try {
+                    const userDoc = await getDoc(doc(db, "users", user.uid));
+                    if (userDoc.exists()) {
+                        const data = userDoc.data();
+                        // Merge firestore data
+                        appState.user = { ...appState.user, ...data };
+                    }
+                } catch (e) { console.error("Error fetching profile:", e); }
+
+                updateHeaderUser();
+                views.signup.classList.add('hidden');
+                views.home.classList.remove('hidden');
+            } else {
+                console.log("👋 User Logged Out");
+                appState.user = null;
+                views.signup.classList.remove('hidden');
+                views.home.classList.add('hidden');
+            }
+        });
+
+        // Form Submit Handler
+        const signupForm = document.getElementById('signup-form');
+        if (signupForm) {
+            signupForm.onsubmit = async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const btn = document.getElementById('signup-btn');
+
+                btn.disabled = true;
+                const originalText = btn.textContent;
+                btn.textContent = "Processando...";
+
+                try {
+                    if (isLoginMode) {
+                        // LOGIN
+                        await signInWithEmailAndPassword(auth, email, password);
+                    } else {
+                        // SIGNUP
+                        const name = document.getElementById('signup-name').value;
+                        const cpf = document.getElementById('signup-cpf').value;
+
+                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                        const user = userCredential.user;
+
+                        // Update Auth Profile
+                        await updateProfile(user, { displayName: name });
+
+                        // Save to Firestore
+                        await setDoc(doc(db, "users", user.uid), {
+                            name, email, cpf,
+                            username: email.split('@')[0].replace(/[^a-z0-9]/g, ''),
+                            createdAt: new Date()
+                        });
+                    }
+                } catch (error) {
+                    console.error("Auth Error:", error);
+                    let msg = "Erro desconhecido.";
+                    if (error.code === 'auth/email-already-in-use') msg = "Este email já está em uso.";
+                    if (error.code === 'auth/wrong-password') msg = "Senha incorreta.";
+                    if (error.code === 'auth/user-not-found') msg = "Usuário não encontrado.";
+                    if (error.code === 'auth/weak-password') msg = "A senha deve ter pelo menos 6 caracteres.";
+                    alert(msg);
+                    btn.disabled = false;
+                    btn.textContent = originalText;
+                }
+            };
+        }
+
+    } catch (error) {
+        console.error("❌ Firebase Init Failed:", error);
+        alert("Erro ao conectar com servidor de segurança. Verifique sua conexão.");
+    }
+}
 
 window.toggleLoginMode = function () {
     isLoginMode = !isLoginMode;
     const btn = document.getElementById('toggle-login-btn');
     const signupBtn = document.getElementById('signup-btn');
     const nameGroup = document.getElementById('signup-name').closest('.form-group');
-    const avatarGroup = document.querySelector('.avatar-upload-label').closest('.form-group');
+    const cpfGroup = document.getElementById('signup-cpf').closest('.form-group'); // New
+    const avatarGroup = document.querySelector('.avatar-upload'); // Select by class
     const title = document.querySelector('.signup-card h2');
     const subtitle = document.querySelector('.signup-card p');
-
-    // Reset Form
-    dom.signupUsername.value = '';
-    dom.usernameStatus.textContent = '';
-    dom.usernameStatus.className = 'username-status';
-    signupBtn.disabled = true;
 
     if (isLoginMode) {
         // Switch to LOGIN
         btn.textContent = 'Quero criar uma conta nova';
         signupBtn.textContent = 'Entrar';
-        nameGroup.style.display = 'none';
-        avatarGroup.style.display = 'none';
-        title.textContent = 'Bem-vindo de volta!';
-        subtitle.textContent = 'Digite seu username para acessar.';
-        document.querySelector('.username-rules').style.display = 'none';
+        signupBtn.disabled = false; // Always enable for login
+        // Hide extra fields
+        if (nameGroup) nameGroup.style.display = 'none';
+        if (cpfGroup) cpfGroup.style.display = 'none';
+        if (avatarGroup) avatarGroup.style.display = 'none';
+
+        title.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Bem-vindo de volta!';
+        subtitle.textContent = 'Digite seu email e senha para acessar.';
     } else {
         // Switch to SIGNUP
         btn.textContent = 'Já tenho um Link na Bio';
         signupBtn.textContent = 'Criar Conta';
-        nameGroup.style.display = 'block';
-        avatarGroup.style.display = 'block';
-        title.textContent = 'Criar sua conta';
+        signupBtn.disabled = false;
+        // Show extra fields
+        if (nameGroup) nameGroup.style.display = 'block';
+        if (cpfGroup) cpfGroup.style.display = 'block';
+        if (avatarGroup) avatarGroup.style.display = 'flex'; // grid/flex usually
+
+        title.innerHTML = '<i class="fa-solid fa-hand-spock"></i> Crie sua conta';
         subtitle.textContent = 'Comece a criar conteúdo profissional hoje mesmo.';
-        document.querySelector('.username-rules').style.display = 'block';
     }
 }
-
-function checkUserLogin() {
-    const savedUser = localStorage.getItem('creator_studio_user');
-    if (savedUser) {
-        try {
-            appState.user = JSON.parse(savedUser);
-            // Restore published URL if known and missing
-            if (appState.user.publishedUrl && !localStorage.getItem('bio_published_' + appState.user.username)) {
-                localStorage.setItem('bio_published_' + appState.user.username, appState.user.publishedUrl);
-            }
-
-            updateHeaderUser();
-            // Pre-fill bio with user data
-            appState.bio.name = appState.user.name;
-            appState.bio.avatar = appState.user.avatar;
-
-            views.signup.classList.add('hidden');
-            views.home.classList.remove('hidden');
-        } catch (e) {
-            console.error("Erro ao carregar usuário", e);
-            localStorage.removeItem('creator_studio_user');
-        }
-    } else {
-        views.signup.classList.remove('hidden');
-        views.home.classList.add('hidden');
-    }
-}
+// Cleanup: Removed old listeners and logic
+// New Firebase listeners are attached inside initFirebase()
 
 function updateHeaderUser() {
     if (!appState.user) return;
@@ -262,119 +335,13 @@ function updateHeaderUser() {
 
 function handleLogout() {
     if (confirm('Tem certeza que deseja sair?')) {
-        localStorage.removeItem('creator_studio_user');
-        appState.user = null;
-        window.location.reload();
+        auth.signOut().then(() => {
+            window.location.reload();
+        }).catch((error) => {
+            console.error("Erro ao sair", error);
+        });
     }
 }
-
-// Avatar Preview in Signup
-dom.signupAvatar.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            dom.signupAvatarPreview.src = e.target.result;
-            appState.uploadedAvatar = e.target.result; // temp storage
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Username Validation (Debounced)
-let debounceTimer;
-
-dom.signupUsername.addEventListener('input', (e) => {
-    const username = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
-    e.target.value = username; // Force clean value
-
-    dom.usernameStatus.textContent = 'Verificando...';
-    dom.usernameStatus.className = 'username-status checking';
-    dom.signupBtn.disabled = true;
-
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(async () => {
-        if (username.length < 3) {
-            dom.usernameStatus.textContent = 'Mínimo 3 caracteres';
-            dom.usernameStatus.className = 'username-status taken';
-            return;
-        }
-
-        try {
-            const res = await fetch(`/api/check-username/${username}`);
-            const data = await res.json();
-            validationData = data; // Save for submit check
-
-            if (isLoginMode) {
-                // LOGIN MODE
-                if (data.exists) {
-                    dom.usernameStatus.textContent = '✓ Usuário encontrado';
-                    dom.usernameStatus.className = 'username-status available';
-                    dom.signupBtn.disabled = false;
-                } else {
-                    dom.usernameStatus.textContent = '✗ Usuário não encontrado';
-                    dom.usernameStatus.className = 'username-status taken';
-                    dom.signupBtn.disabled = true;
-                }
-            } else {
-                // SIGNUP MODE
-                if (data.available) {
-                    dom.usernameStatus.textContent = '✓ Disponível';
-                    dom.usernameStatus.className = 'username-status available';
-                    dom.signupBtn.disabled = false;
-                } else {
-                    dom.usernameStatus.textContent = '✗ ' + (data.reason || 'Indisponível');
-                    dom.usernameStatus.className = 'username-status taken';
-                    dom.signupBtn.disabled = true;
-                }
-            }
-
-        } catch (err) {
-            console.error(err);
-            dom.usernameStatus.textContent = 'Erro ao verificar';
-        }
-    }, 500);
-});
-
-// Signup/Login Submit
-dom.signupForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (dom.signupBtn.disabled) return;
-
-    if (isLoginMode) {
-        // --- LOGIN FLOW ---
-        const user = {
-            name: dom.signupUsername.value, // Placeholder name if not available
-            username: dom.signupUsername.value,
-            avatar: '', // Placeholder avatar
-            publishedUrl: validationData?.url || null
-        };
-
-        // Save session
-        localStorage.setItem('creator_studio_user', JSON.stringify(user));
-
-        // Save published state so "Atualizar" appears
-        if (validationData?.url) {
-            localStorage.setItem('bio_published_' + user.username, validationData.url);
-        }
-
-        appState.user = user;
-        checkUserLogin(); // Transition
-        alert(`Bem-vindo de volta, @${user.username}!`);
-
-    } else {
-        // --- SIGNUP FLOW ---
-        const user = {
-            name: dom.signupName.value,
-            username: dom.signupUsername.value,
-            avatar: appState.uploadedAvatar || dom.signupAvatarPreview.src
-        };
-
-        localStorage.setItem('creator_studio_user', JSON.stringify(user));
-        appState.user = user;
-        checkUserLogin(); // Transition
-    }
-});
 
 dom.logoutBtn.addEventListener('click', handleLogout);
 
