@@ -69,11 +69,20 @@ const TEMPLATES = {
 TEMPLATES.week = TEMPLATES.single;
 
 const niches = [
-    { id: 'marketing', title: 'Marketing Digital', icon: '🚀', colors: { primary: '#2563EB', text: '#1E293B', bg: '#F8FAFC', secondary: '#F59E0B' } },
-    { id: 'health', title: 'Saúde & Bem-estar', icon: '🌿', colors: { primary: '#059669', text: '#064E3B', bg: '#ECFDF5', secondary: '#10B981' } },
-    { id: 'tech', title: 'Tecnologia', icon: '💻', colors: { primary: '#7C3AED', text: '#4C1D95', bg: '#F5F3FF', secondary: '#8B5CF6' } },
-    { id: 'lifestyle', title: 'Lifestyle', icon: '✨', colors: { primary: '#DB2777', text: '#831843', bg: '#FDF2F8', secondary: '#EC4899' } },
-    { id: 'finance', title: 'Finanças', icon: '💰', colors: { primary: '#0D9488', text: '#134E4A', bg: '#F0FDFA', secondary: '#14B8A6' } }
+    // Nichos Originais
+    { id: 'marketing', title: 'Marketing Digital', icon: '🚀', colors: { primary: '#2563EB', text: '#1E293B', bg: '#F8FAFC', secondary: '#F59E0B' }, font: "'Inter', sans-serif", hashtags: "#marketingdigital #empreendedorismo #negociosonline" },
+    { id: 'health', title: 'Saúde & Bem-estar', icon: '🌿', colors: { primary: '#059669', text: '#064E3B', bg: '#ECFDF5', secondary: '#10B981' }, font: "'Lato', sans-serif", hashtags: "#saude #bemestar #vidasaudavel" },
+    { id: 'tech', title: 'Tecnologia', icon: '💻', colors: { primary: '#7C3AED', text: '#4C1D95', bg: '#F5F3FF', secondary: '#8B5CF6' }, font: "'Inter', sans-serif", hashtags: "#tecnologia #inovacao #tech" },
+    { id: 'lifestyle', title: 'Lifestyle', icon: '✨', colors: { primary: '#DB2777', text: '#831843', bg: '#FDF2F8', secondary: '#EC4899' }, font: "'Poppins', sans-serif", hashtags: "#lifestyle #estilo #vidamoderna" },
+    { id: 'finance', title: 'Finanças', icon: '💰', colors: { primary: '#0D9488', text: '#134E4A', bg: '#F0FDFA', secondary: '#14B8A6' }, font: "'Montserrat', sans-serif", hashtags: "#financas #investimentos #dinheiro" },
+
+    // Nichos Femininos Empreendedores
+    { id: 'estetica', title: 'Estética & Beleza', icon: '💆‍♀️', colors: { primary: '#E91E63', text: '#880E4F', bg: '#FFF0F5', secondary: '#F8BBD9' }, font: "'Playfair Display', serif", hashtags: "#estetica #beleza #skincare #autocuidado" },
+    { id: 'confeitaria', title: 'Confeitaria & Doces', icon: '🧁', colors: { primary: '#EC407A', text: '#AD1457', bg: '#FFF8E1', secondary: '#FCE4EC' }, font: "'Dancing Script', cursive", hashtags: "#confeitaria #bolosdecorados #docesgourmet" },
+    { id: 'nailart', title: 'Nail Art & Manicure', icon: '💅', colors: { primary: '#D81B60', text: '#880E4F', bg: '#FCE4EC', secondary: '#F48FB1' }, font: "'Poppins', sans-serif", hashtags: "#nailart #unhasdecoradas #manicure" },
+    { id: 'coaching', title: 'Coaching Feminino', icon: '🌸', colors: { primary: '#9C27B0', text: '#4A148C', bg: '#F3E5F5', secondary: '#E1BEE7' }, font: "'Montserrat', sans-serif", hashtags: "#coaching #empoderamento #mulheres" },
+    { id: 'artesanato', title: 'Artesanato & Handmade', icon: '🧶', colors: { primary: '#8D6E63', text: '#4E342E', bg: '#EFEBE9', secondary: '#D7CCC8' }, font: "'Lora', serif", hashtags: "#artesanato #feitoamao #handmade" },
+    { id: 'consultoria', title: 'Consultoria de Imagem', icon: '👠', colors: { primary: '#00897B', text: '#004D40', bg: '#E0F2F1', secondary: '#B2DFDB' }, font: "'Lato', sans-serif", hashtags: "#consultoriadeimagem #estilopessoal #moda" }
 ];
 
 // --- DOM ELEMENTS ---
@@ -172,17 +181,66 @@ function init() {
 
 // --- USER & SIGNUP LOGIC ---
 
+let isLoginMode = false;
+let validationData = null; // Store check result
+
+window.toggleLoginMode = function () {
+    isLoginMode = !isLoginMode;
+    const btn = document.getElementById('toggle-login-btn');
+    const signupBtn = document.getElementById('signup-btn');
+    const nameGroup = document.getElementById('signup-name').closest('.form-group');
+    const avatarGroup = document.querySelector('.avatar-upload-label').closest('.form-group');
+    const title = document.querySelector('.signup-card h2');
+    const subtitle = document.querySelector('.signup-card p');
+
+    // Reset Form
+    dom.signupUsername.value = '';
+    dom.usernameStatus.textContent = '';
+    dom.usernameStatus.className = 'username-status';
+    signupBtn.disabled = true;
+
+    if (isLoginMode) {
+        // Switch to LOGIN
+        btn.textContent = 'Quero criar uma conta nova';
+        signupBtn.textContent = 'Entrar';
+        nameGroup.style.display = 'none';
+        avatarGroup.style.display = 'none';
+        title.textContent = 'Bem-vindo de volta!';
+        subtitle.textContent = 'Digite seu username para acessar.';
+        document.querySelector('.username-rules').style.display = 'none';
+    } else {
+        // Switch to SIGNUP
+        btn.textContent = 'Já tenho um Link na Bio';
+        signupBtn.textContent = 'Criar Conta';
+        nameGroup.style.display = 'block';
+        avatarGroup.style.display = 'block';
+        title.textContent = 'Criar sua conta';
+        subtitle.textContent = 'Comece a criar conteúdo profissional hoje mesmo.';
+        document.querySelector('.username-rules').style.display = 'block';
+    }
+}
+
 function checkUserLogin() {
     const savedUser = localStorage.getItem('creator_studio_user');
     if (savedUser) {
-        appState.user = JSON.parse(savedUser);
-        updateHeaderUser();
-        // Pre-fill bio with user data
-        appState.bio.name = appState.user.name;
-        appState.bio.avatar = appState.user.avatar;
+        try {
+            appState.user = JSON.parse(savedUser);
+            // Restore published URL if known and missing
+            if (appState.user.publishedUrl && !localStorage.getItem('bio_published_' + appState.user.username)) {
+                localStorage.setItem('bio_published_' + appState.user.username, appState.user.publishedUrl);
+            }
 
-        views.signup.classList.add('hidden');
-        views.home.classList.remove('hidden');
+            updateHeaderUser();
+            // Pre-fill bio with user data
+            appState.bio.name = appState.user.name;
+            appState.bio.avatar = appState.user.avatar;
+
+            views.signup.classList.add('hidden');
+            views.home.classList.remove('hidden');
+        } catch (e) {
+            console.error("Erro ao carregar usuário", e);
+            localStorage.removeItem('creator_studio_user');
+        }
     } else {
         views.signup.classList.remove('hidden');
         views.home.classList.add('hidden');
@@ -191,8 +249,8 @@ function checkUserLogin() {
 
 function updateHeaderUser() {
     if (!appState.user) return;
-    dom.headerAvatar.src = appState.user.avatar;
-    dom.headerName.textContent = appState.user.name;
+    dom.headerAvatar.src = appState.user.avatar || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ccc"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>';
+    dom.headerName.textContent = appState.user.name || appState.user.username;
     dom.headerUsername.textContent = '@' + appState.user.username;
 }
 
@@ -219,6 +277,7 @@ dom.signupAvatar.addEventListener('change', (e) => {
 
 // Username Validation (Debounced)
 let debounceTimer;
+
 dom.signupUsername.addEventListener('input', (e) => {
     const username = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
     e.target.value = username; // Force clean value
@@ -238,16 +297,32 @@ dom.signupUsername.addEventListener('input', (e) => {
         try {
             const res = await fetch(`/api/check-username/${username}`);
             const data = await res.json();
+            validationData = data; // Save for submit check
 
-            if (data.available) {
-                dom.usernameStatus.textContent = '✓ Disponível';
-                dom.usernameStatus.className = 'username-status available';
-                dom.signupBtn.disabled = false;
+            if (isLoginMode) {
+                // LOGIN MODE
+                if (data.exists) {
+                    dom.usernameStatus.textContent = '✓ Usuário encontrado';
+                    dom.usernameStatus.className = 'username-status available';
+                    dom.signupBtn.disabled = false;
+                } else {
+                    dom.usernameStatus.textContent = '✗ Usuário não encontrado';
+                    dom.usernameStatus.className = 'username-status taken';
+                    dom.signupBtn.disabled = true;
+                }
             } else {
-                dom.usernameStatus.textContent = '✗ ' + (data.reason || 'Indisponível');
-                dom.usernameStatus.className = 'username-status taken';
-                dom.signupBtn.disabled = true;
+                // SIGNUP MODE
+                if (data.available) {
+                    dom.usernameStatus.textContent = '✓ Disponível';
+                    dom.usernameStatus.className = 'username-status available';
+                    dom.signupBtn.disabled = false;
+                } else {
+                    dom.usernameStatus.textContent = '✗ ' + (data.reason || 'Indisponível');
+                    dom.usernameStatus.className = 'username-status taken';
+                    dom.signupBtn.disabled = true;
+                }
             }
+
         } catch (err) {
             console.error(err);
             dom.usernameStatus.textContent = 'Erro ao verificar';
@@ -255,21 +330,44 @@ dom.signupUsername.addEventListener('input', (e) => {
     }, 500);
 });
 
-// Signup Submit
+// Signup/Login Submit
 dom.signupForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (dom.signupBtn.disabled) return;
 
-    const user = {
-        name: dom.signupName.value,
-        username: dom.signupUsername.value,
-        avatar: appState.uploadedAvatar || dom.signupAvatarPreview.src
-    };
+    if (isLoginMode) {
+        // --- LOGIN FLOW ---
+        const user = {
+            name: dom.signupUsername.value, // Placeholder name if not available
+            username: dom.signupUsername.value,
+            avatar: '', // Placeholder avatar
+            publishedUrl: validationData?.url || null
+        };
 
-    localStorage.setItem('creator_studio_user', JSON.stringify(user));
-    appState.user = user;
+        // Save session
+        localStorage.setItem('creator_studio_user', JSON.stringify(user));
 
-    // Transition
-    checkUserLogin();
+        // Save published state so "Atualizar" appears
+        if (validationData?.url) {
+            localStorage.setItem('bio_published_' + user.username, validationData.url);
+        }
+
+        appState.user = user;
+        checkUserLogin(); // Transition
+        alert(`Bem-vindo de volta, @${user.username}!`);
+
+    } else {
+        // --- SIGNUP FLOW ---
+        const user = {
+            name: dom.signupName.value,
+            username: dom.signupUsername.value,
+            avatar: appState.uploadedAvatar || dom.signupAvatarPreview.src
+        };
+
+        localStorage.setItem('creator_studio_user', JSON.stringify(user));
+        appState.user = user;
+        checkUserLogin(); // Transition
+    }
 });
 
 dom.logoutBtn.addEventListener('click', handleLogout);
@@ -279,7 +377,7 @@ function startFlow(mode) {
     appState.mode = mode;
     views.home.classList.add('hidden');
     views.niche.classList.remove('hidden');
-    renderNiches();
+    renderNicheGrid();
 }
 
 function startBioFlow() {
@@ -294,6 +392,9 @@ function startBioFlow() {
 
     renderBioLinksList();
     renderBioPreview();
+
+    // Update button state (Publicar/Atualizar)
+    updatePublishButtonState();
 }
 
 function goHome() {
@@ -322,8 +423,9 @@ async function publishLinkInBio() {
     if (!appState.user) return alert('Erro: Usuário não logado.');
 
     const btn = document.getElementById('publish-bio-btn');
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Publicando...';
+    const isUpdate = localStorage.getItem('bio_published_' + appState.user.username);
+
+    btn.innerHTML = isUpdate ? '⏳ Atualizando...' : '⏳ Publicando...';
     btn.disabled = true;
 
     try {
@@ -341,34 +443,45 @@ async function publishLinkInBio() {
         const data = await response.json();
 
         if (data.success) {
-            showPublishSuccess(data.url);
+            // Save published state forever
+            localStorage.setItem('bio_published_' + appState.user.username, data.url);
+
+            // Update button to "Atualizar" permanently
+            btn.innerHTML = '🔄 Atualizar';
+            btn.disabled = false;
+
+            showPublishSuccess(data.url, isUpdate);
         } else {
             alert('Erro ao publicar: ' + (data.error || 'Erro desconhecido'));
+            btn.innerHTML = isUpdate ? '🔄 Atualizar' : '🚀 Publicar';
+            btn.disabled = false;
         }
     } catch (err) {
         console.error(err);
         alert('Erro de conexão ao publicar.');
-    } finally {
-        btn.innerHTML = originalText;
+        btn.innerHTML = isUpdate ? '🔄 Atualizar' : '🚀 Publicar';
         btn.disabled = false;
     }
 }
 
-function showPublishSuccess(url) {
+function showPublishSuccess(url, isUpdate) {
+    const title = isUpdate ? 'Site Atualizado!' : 'Site Publicado!';
+    const message = isUpdate ? 'Suas alterações já estão online.' : 'Seu Link na Bio está online e pronto para usar.';
+
     const modalHtml = `
-    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;">
+    <div id="publish-success-modal" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;">
         <div style="background:white; padding:30px; border-radius:16px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
-            <div style="font-size:50px; margin-bottom:10px;">🚀</div>
-            <h2 style="color:#111827; margin-bottom:10px; font-weight:800;">Site Publicado!</h2>
-            <p style="color:#6B7280; margin-bottom:20px;">Seu Link na Bio está online e pronto para usar.</p>
+            <div style="font-size:50px; margin-bottom:10px;">${isUpdate ? '✅' : '🚀'}</div>
+            <h2 style="color:#111827; margin-bottom:10px; font-weight:800;">${title}</h2>
+            <p style="color:#6B7280; margin-bottom:20px;">${message}</p>
             
             <div style="background:#F3F4F6; padding:12px; border-radius:8px; margin-bottom:20px; font-family:monospace; word-break:break-all; border:1px solid #E5E7EB; color:#4F46E5;">
-                <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">${url}</a>
+                <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">${url.replace(/\?v=\d+/, '')}</a>
             </div>
 
             <div style="display:flex; gap:10px; justify-content:center;">
                 <a href="${url}" target="_blank" class="primary-btn" style="text-decoration:none;">Abrir Site</a>
-                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding:10px 20px; border:1px solid #E5E7EB; background:white; border-radius:8px; cursor:pointer;">Fechar</button>
+                <button onclick="document.getElementById('publish-success-modal').remove()" style="padding:10px 20px; border:1px solid #E5E7EB; background:white; border-radius:8px; cursor:pointer;">Fechar</button>
             </div>
         </div>
     </div>
@@ -376,24 +489,29 @@ function showPublishSuccess(url) {
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 }
 
+// Check if already published on load
+function updatePublishButtonState() {
+    if (!appState.user) return;
+    const btn = document.getElementById('publish-bio-btn');
+    if (!btn) return;
+
+    const publishedUrl = localStorage.getItem('bio_published_' + appState.user.username);
+    if (publishedUrl) {
+        btn.innerHTML = '🔄 Atualizar';
+    } else {
+        btn.innerHTML = '🚀 Publicar';
+    }
+}
+
 function setupEventListeners() {
     // Mode Selection is inline onclick
 
     // Editor Tabs
     setupEditorListeners();
-    // Expose publish function for HTML onclick
-    window.openPublishModal = publishLinkInBio;
+    // openPublishModal is defined at the end of the file
 }
 
-function renderNicheGrid() {
-    if (!dom.nicheGrid || typeof niches === 'undefined') return;
-    dom.nicheGrid.innerHTML = niches.map(niche => `
-        <div class="niche-item" data-id="${niche.id}">
-            <div class="niche-icon">${niche.icon}</div>
-            <div class="niche-name">${niche.title}</div>
-        </div>
-    `).join('');
-}
+// renderNicheGrid is defined below at line 523
 
 function setupCanvasScaling() {
     if (!dom.wrapper || !dom.canvas) return;
@@ -1100,7 +1218,10 @@ function loadBioDefaults() {
     inputs.bioName.value = appState.bio.name;
     inputs.bioRole.value = appState.bio.role;
     inputs.bioText.value = appState.bio.text;
-    inputs.bioAccent.value = appState.bio.accentColor;
+
+    // Use getElementById instead of broken reference
+    const bioAccentInput = document.getElementById('bio-color-accent');
+    if (bioAccentInput) bioAccentInput.value = appState.bio.accentColor;
 
     // Load advanced defaults
     if (bioInputs.font) bioInputs.font.value = appState.bio.font || "'Montserrat', sans-serif";
@@ -1128,30 +1249,7 @@ function loadBioDefaults() {
     renderBioLinksList();
 }
 
-function updateBioState() {
-    appState.bio.name = inputs.bioName.value;
-    appState.bio.role = inputs.bioRole.value;
-    appState.bio.text = inputs.bioText.value;
-    appState.bio.accentColor = inputs.bioAccent.value;
-
-    // Advanced State
-    appState.bio.font = bioInputs.font?.value || "'Montserrat', sans-serif";
-    appState.bio.layout = bioInputs.layout?.value || "default";
-
-    appState.bio.bannerSettings = {
-        zoom: bioInputs.bannerZoom?.value || 100,
-        y: bioInputs.bannerY?.value || 50
-    };
-
-    // NEW: Font sizes state
-    appState.bio.fontSizes = {
-        name: parseInt(bioInputs.nameSize?.value) || 100,
-        role: parseInt(bioInputs.roleSize?.value) || 100,
-        text: parseInt(bioInputs.textSize?.value) || 100
-    };
-
-    renderBioPreview();
-}
+// updateBioState is defined below at line 1250 (single definition)
 
 function handleBioAvatarUpload(e) {
     const file = e.target.files[0];
