@@ -12,6 +12,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// Health Check for UptimeRobot
+app.get('/ping', (req, res) => res.send('pong'));
+
 // Serve the frontend files statically
 app.use(express.static('.'));
 
