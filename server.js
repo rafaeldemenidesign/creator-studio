@@ -141,7 +141,8 @@ app.get('/api/check-username/:username', async (req, res) => {
                 path: `${username}/index.html`,
             });
             // If we get here, file exists = username taken
-            return res.json({ available: false, reason: 'Já está em uso' });
+            const publicUrl = `https://${GITHUB_OWNER}.github.io/${GITHUB_REPO}/${username}/`;
+            return res.json({ available: false, reason: 'Já está em uso', exists: true, url: publicUrl });
         } catch (e) {
             if (e.status === 404) {
                 return res.json({ available: true });
