@@ -297,11 +297,11 @@ window.toggleLoginMode = function () {
     const title = document.querySelector('.signup-card h2');
     const subtitle = document.querySelector('.signup-card p');
 
+    // ... inside toggleLoginMode
     if (isLoginMode) {
         // Switch to LOGIN
         btn.textContent = 'Quero criar uma conta nova';
         signupBtn.textContent = 'Entrar';
-        signupBtn.disabled = false; // Always enable for login
         // Hide extra fields
         if (nameGroup) nameGroup.style.display = 'none';
         if (cpfGroup) cpfGroup.style.display = 'none';
@@ -313,7 +313,6 @@ window.toggleLoginMode = function () {
         // Switch to SIGNUP
         btn.textContent = 'Já tenho um Link na Bio';
         signupBtn.textContent = 'Criar Conta';
-        signupBtn.disabled = false;
         // Show extra fields
         if (nameGroup) nameGroup.style.display = 'block';
         if (cpfGroup) cpfGroup.style.display = 'block';
@@ -321,6 +320,28 @@ window.toggleLoginMode = function () {
 
         title.innerHTML = '<i class="fa-solid fa-hand-spock"></i> Crie sua conta';
         subtitle.textContent = 'Comece a criar conteúdo profissional hoje mesmo.';
+    }
+
+    checkAuthFormValidity(); // Re-validate on mode switch
+}
+
+// Global Validation Function
+window.checkAuthFormValidity = function () {
+    const signupBtn = document.getElementById('signup-btn');
+    if (!signupBtn) return;
+
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value.trim();
+    const name = document.getElementById('signup-name').value.trim();
+
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const isValidPass = password.length >= 6;
+    const isValidName = name.length >= 2;
+
+    if (isLoginMode) {
+        signupBtn.disabled = !(isValidEmail && isValidPass);
+    } else {
+        signupBtn.disabled = !(isValidName && isValidEmail && isValidPass);
     }
 }
 // Cleanup: Removed old listeners and logic
@@ -478,6 +499,12 @@ function updatePublishButtonState() {
 
 function setupEventListeners() {
     // Mode Selection is inline onclick
+
+    // Auth Validation Listeners
+    ['signup-email', 'signup-password', 'signup-name'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', window.checkAuthFormValidity);
+    });
 
     // Editor Tabs
     setupEditorListeners();
