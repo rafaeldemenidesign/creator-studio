@@ -53,10 +53,18 @@
                                     required>
                             </div>
                             <span id="username-status" class="username-status"></span>
+                            <small class="username-rules">Apenas letras minúsculas, números e underscore (_). Mínimo 3
+                                caracteres.</small>
                         </div>
 
                         <button type="submit" id="signup-btn" class="primary-btn full-width" disabled>Criar
                             Conta</button>
+
+                        <div style="margin-top: 16px; text-align: center;">
+                            <button type="button" id="toggle-login-btn" class="text-btn" onclick="toggleLoginMode()">
+                                Já tenho um Link na Bio
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -341,13 +349,11 @@
                     <button class="back-link" onclick="goHome()">← Voltar</button>
                     <h2>Criador de Link na Bio</h2>
                 </div>
-                <div class="header-right" style="display:flex; gap:10px;">
-                    <button id="publish-bio-btn" class="secondary-btn" onclick="openPublishModal()"
-                        style="background:#24292e; color:white; border:none; display:flex; align-items:center; gap:8px;">
-                        🚀 Publicar Online
+                <div class="header-right">
+                    <button id="publish-bio-btn" class="primary-btn" onclick="publishLinkInBio()"
+                        style="background:#24292e; display:flex; align-items:center; gap:8px;">
+                        🚀 Publicar
                     </button>
-                    <button id="download-bio-btn" class="primary-btn" onclick="downloadBioSite()">Baixar Site
-                        (.html)</button>
                 </div>
             </header>
 
@@ -524,6 +530,30 @@
         </section>
 
         <!-- MODAL: PUBLISH CONFIG -->
+        <div id="publish-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <button class="modal-close" onclick="closePublishModal()">×</button>
+                <h2 style="margin-bottom: 8px; font-size: 1.5rem;">🚀 Publicar seu Link na Bio</h2>
+                <p style="color: #666; margin-bottom: 24px;">Escolha um nome único para seu link personalizado.</p>
+
+                <div class="form-group">
+                    <label for="site-slug">Seu Link</label>
+                    <div class="slug-input-wrapper">
+                        <span class="slug-prefix">seusite.com/</span>
+                        <input type="text" id="site-slug" placeholder="seu-nome" pattern="[a-z0-9-]+" />
+                    </div>
+                </div>
+
+                <div id="publish-status"
+                    style="display: none; padding: 12px; background: #f0f9ff; border-radius: 8px; margin: 16px 0; font-size: 0.9rem;">
+                </div>
+
+                <button id="publish-action-btn" class="primary-btn full-width" onclick="publishToPlatform()"
+                    style="margin-top: 16px;">
+                    🚀 Publicar Agora
+                </button>
+            </div>
+        </div>
 
     </main>
 
