@@ -7,7 +7,7 @@ const niches = [
     {
         id: 'pediatria',
         title: 'Medicina Infantil',
-        icon: '🧸',
+        icon: 'fa-solid fa-child',
         description: 'Divertido, confiável e informativo. Cores suaves.',
         colors: { primary: '#FF9FAC', secondary: '#89CFF0', bg: '#FFF5F7', text: '#4A5568' },
         font: "'Outfit', sans-serif",
@@ -29,7 +29,7 @@ const niches = [
     {
         id: 'advocacia',
         title: 'Advocacia',
-        icon: '⚖️',
+        icon: 'fa-solid fa-scale-balanced',
         description: 'Sério, autoritário e elegante.',
         colors: { primary: '#1e3a8a', secondary: '#d4af37', bg: '#f8fafc', text: '#0f172a' },
         font: "'Playfair Display', serif",
@@ -51,7 +51,7 @@ const niches = [
     {
         id: 'hamburgueria',
         title: 'Hamburgueria',
-        icon: '🍔',
+        icon: 'fa-solid fa-burger',
         description: 'Apetitoso e vibrante. Dark mode.',
         colors: { primary: '#fca311', secondary: '#9c2f2f', bg: '#171717', text: '#ffffff' },
         font: "'Montserrat', sans-serif",
@@ -73,7 +73,7 @@ const niches = [
     {
         id: 'roupas',
         title: 'Loja de Roupas',
-        icon: '👗',
+        icon: 'fa-solid fa-shirt',
         description: 'Clean, fashion e editorial.',
         colors: { primary: '#000000', secondary: '#666666', bg: '#ffffff', text: '#000000' },
         font: "'Lato', sans-serif",
@@ -95,7 +95,7 @@ const niches = [
     {
         id: 'internet',
         title: 'Provedor de Internet',
-        icon: '🚀',
+        icon: 'fa-solid fa-rocket',
         description: 'Velocidade e tecnologia.',
         colors: { primary: '#0066ff', secondary: '#00ccff', bg: '#f0f9ff', text: '#0c4a6e' },
         font: "'Inter', sans-serif",
@@ -117,7 +117,7 @@ const niches = [
     {
         id: 'celulares',
         title: 'Loja de Celulares',
-        icon: '📱',
+        icon: 'fa-solid fa-mobile-screen-button',
         description: 'High-tech e moderno.',
         colors: { primary: '#2563eb', secondary: '#1e293b', bg: '#f8fafc', text: '#1e293b' },
         font: "'Inter', sans-serif",
@@ -139,7 +139,7 @@ const niches = [
     {
         id: 'otica',
         title: 'Ótica',
-        icon: '👓',
+        icon: 'fa-solid fa-glasses',
         description: 'Clareza e visão.',
         colors: { primary: '#14b8a6', secondary: '#f0fdfa', bg: '#ffffff', text: '#134e4a' },
         font: "'Lato', sans-serif",
@@ -161,7 +161,7 @@ const niches = [
     {
         id: 'acaiteria',
         title: 'Açaiteria / Sorvetes',
-        icon: '🍧',
+        icon: 'fa-solid fa-ice-cream',
         description: 'Refrescante e roxo.',
         colors: { primary: '#6b21a8', secondary: '#e9d5ff', bg: '#faf5ff', text: '#3b0764' },
         font: "'Outfit', sans-serif",
@@ -183,7 +183,7 @@ const niches = [
     {
         id: 'restaurante',
         title: 'Restaurante',
-        icon: '🍽️',
+        icon: 'fa-solid fa-utensils',
         description: 'Sofisticado e delicioso.',
         colors: { primary: '#9f1239', secondary: '#f43f5e', bg: '#fff1f2', text: '#881337' },
         font: "'Playfair Display', serif",
@@ -205,7 +205,7 @@ const niches = [
     {
         id: 'academia',
         title: 'Academia',
-        icon: '💪',
+        icon: 'fa-solid fa-dumbbell',
         description: 'Força e impacto.',
         colors: { primary: '#eab308', secondary: '#ffffff', bg: '#171717', text: '#ffffff' },
         font: "'Montserrat', sans-serif",
@@ -228,7 +228,7 @@ const niches = [
     {
         id: 'estetica',
         title: 'Estética & Beleza',
-        icon: '💆‍♀️',
+        icon: 'fa-solid fa-spa',
         description: 'Elegante, sofisticado e acolhedor.',
         colors: { primary: '#E91E63', secondary: '#F8BBD9', bg: '#FFF0F5', text: '#880E4F' },
         font: "'Playfair Display', serif",
@@ -250,7 +250,7 @@ const niches = [
     {
         id: 'confeitaria',
         title: 'Confeitaria & Doces',
-        icon: '🧁',
+        icon: 'fa-solid fa-cake-candles',
         description: 'Doce, delicado e irresistível.',
         colors: { primary: '#EC407A', secondary: '#FCE4EC', bg: '#FFF8E1', text: '#AD1457' },
         font: "'Dancing Script', cursive",
@@ -272,7 +272,7 @@ const niches = [
     {
         id: 'nailart',
         title: 'Nail Art & Manicure',
-        icon: '💅',
+        icon: 'fa-solid fa-wand-magic-sparkles',
         description: 'Criativo, colorido e sofisticado.',
         colors: { primary: '#D81B60', secondary: '#F48FB1', bg: '#FCE4EC', text: '#880E4F' },
         font: "'Poppins', sans-serif",
@@ -294,7 +294,7 @@ const niches = [
     {
         id: 'coaching',
         title: 'Coaching Feminino',
-        icon: '✨',
+        icon: 'fa-solid fa-star',
         description: 'Empoderador e transformador.',
         colors: { primary: '#9C27B0', secondary: '#E1BEE7', bg: '#F3E5F5', text: '#4A148C' },
         font: "'Montserrat', sans-serif",
@@ -316,7 +316,7 @@ const niches = [
     {
         id: 'artesanato',
         title: 'Artesanato & Handmade',
-        icon: '🧶',
+        icon: 'fa-solid fa-palette',
         description: 'Aconchegante e autêntico.',
         colors: { primary: '#8D6E63', secondary: '#D7CCC8', bg: '#EFEBE9', text: '#4E342E' },
         font: "'Lora', serif",
@@ -338,7 +338,7 @@ const niches = [
     {
         id: 'consultoria_imagem',
         title: 'Consultoria de Imagem',
-        icon: '👠',
+        icon: 'fa-solid fa-user-tie',
         description: 'Sofisticado e transformador.',
         colors: { primary: '#00897B', secondary: '#B2DFDB', bg: '#E0F2F1', text: '#004D40' },
         font: "'Lato', sans-serif",
