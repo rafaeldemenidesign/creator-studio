@@ -441,7 +441,7 @@ async function publishLinkInBio() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                username: appState.user.username,
+                slug: appState.user.username,
                 content: htmlContent
             })
         });
