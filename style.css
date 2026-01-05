@@ -571,6 +571,7 @@ input[type="color"]::-webkit-color-swatch {
 /* INPUT RANGES */
 input[type=range] {
     -webkit-appearance: none;
+    appearance: none;
     background: transparent;
 }
 
