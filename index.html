@@ -19,9 +19,60 @@
 <body>
 
     <main id="app">
+        <!-- VIEW: SIGNUP -->
+        <section id="signup-view" class="hidden">
+            <div class="signup-container">
+                <div class="signup-card">
+                    <div class="signup-header">
+                        <h1>👋 Bem-vindo ao Creator Studio</h1>
+                        <p>Crie sua conta para começar</p>
+                    </div>
+
+                    <form id="signup-form" class="signup-form">
+                        <div class="avatar-upload">
+                            <label for="signup-avatar" class="avatar-label">
+                                <img id="signup-avatar-preview"
+                                    src="https://ui-avatars.com/api/?name=User&background=6366f1&color=fff&size=120"
+                                    alt="Foto">
+                                <span class="avatar-edit">📷</span>
+                            </label>
+                            <input type="file" id="signup-avatar" accept="image/*" hidden>
+                            <span class="avatar-hint">Adicione sua foto</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-name">Nome</label>
+                            <input type="text" id="signup-name" placeholder="Seu nome completo" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-username">Username</label>
+                            <div class="username-input-wrapper">
+                                <span class="username-prefix">@</span>
+                                <input type="text" id="signup-username" placeholder="seu_usuario" pattern="[a-z0-9_]+"
+                                    required>
+                            </div>
+                            <span id="username-status" class="username-status"></span>
+                        </div>
+
+                        <button type="submit" id="signup-btn" class="primary-btn full-width" disabled>Criar
+                            Conta</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
         <!-- VIEW: MODE SELECTION (HOME) -->
-        <section id="home-view" class="active">
+        <section id="home-view" class="hidden">
             <header class="main-header">
+                <div class="header-user" id="header-user">
+                    <img id="header-avatar" src="" alt="Avatar" class="header-avatar">
+                    <div class="header-user-info">
+                        <span id="header-name" class="header-name"></span>
+                        <span id="header-username" class="header-username"></span>
+                    </div>
+                    <button id="logout-btn" class="icon-btn" title="Sair">🚪</button>
+                </div>
                 <h1>Creator Studio</h1>
                 <p>O que você planeja criar hoje?</p>
             </header>
