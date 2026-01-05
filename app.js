@@ -1,5 +1,6 @@
 // --- STATE ---
 let appState = {
+    user: null, // { name, username, avatar }
     mode: 'single', // 'single', 'carousel', 'week', 'bio'
     niche: null,
     slides: [],
@@ -31,14 +32,14 @@ let appState = {
     },
     // BIO STATE (NEW)
     bio: {
-        name: 'Jhonatan Peixoto',
-        role: 'Marketing e Negócios',
-        text: 'Estrategista Digital e Mentor de Negócios. Ajudo você a escalar seus resultados.',
-        avatar: 'https://i.pravatar.cc/300?img=11', // Default placeholder
+        name: 'Seu Nome',
+        role: 'Sua Profissão',
+        text: 'Sua biografia curta aqui.',
+        avatar: 'https://ui-avatars.com/api/?name=User&background=6366f1&color=fff',
         links: [
             { id: 1, label: 'Agende uma Reunião', url: '#', type: 'highlight' },
             { id: 2, label: 'Meu Site Oficial', url: '#', type: 'link' },
-            { id: 3, label: 'Canal do YouTube', url: '#', type: 'link' }
+            { id: 3, label: 'Instagram', url: '#', type: 'link' }
         ],
         accentColor: '#F59E0B',
         bgImage: null,
@@ -67,55 +68,41 @@ const TEMPLATES = {
 };
 TEMPLATES.week = TEMPLATES.single;
 
+const niches = [
+    { id: 'marketing', title: 'Marketing Digital', icon: '🚀', colors: { primary: '#2563EB', text: '#1E293B', bg: '#F8FAFC', secondary: '#F59E0B' } },
+    { id: 'health', title: 'Saúde & Bem-estar', icon: '🌿', colors: { primary: '#059669', text: '#064E3B', bg: '#ECFDF5', secondary: '#10B981' } },
+    { id: 'tech', title: 'Tecnologia', icon: '💻', colors: { primary: '#7C3AED', text: '#4C1D95', bg: '#F5F3FF', secondary: '#8B5CF6' } },
+    { id: 'lifestyle', title: 'Lifestyle', icon: '✨', colors: { primary: '#DB2777', text: '#831843', bg: '#FDF2F8', secondary: '#EC4899' } },
+    { id: 'finance', title: 'Finanças', icon: '💰', colors: { primary: '#0D9488', text: '#134E4A', bg: '#F0FDFA', secondary: '#14B8A6' } }
+];
+
 // --- DOM ELEMENTS ---
 const views = {
+    signup: document.getElementById('signup-view'),
     home: document.getElementById('home-view'),
     niche: document.getElementById('niche-selection-view'),
     editor: document.getElementById('editor-view'),
     bio: document.getElementById('bio-view')
 };
 
-const inputs = {
-    // Content
-    title: document.getElementById('input-title'),
-    subtitle: document.getElementById('input-subtitle'),
-    footer: document.getElementById('input-footer'),
-    layout: document.getElementById('layout-select'),
-    image: document.getElementById('input-image'),
-
-    // Design - Brand
-    brandColor: document.getElementById('brand-color'),
-    useBrandColor: document.getElementById('use-brand-color'), // Legacy flag, kept for compatibility logic
-    brandFont: document.getElementById('brand-font'),
-
-    // Design - Granular
-    useCustomColors: document.getElementById('use-custom-colors'),
-    colorTitle: document.getElementById('color-title'),
-    colorSub: document.getElementById('color-sub'),
-    colorBg: document.getElementById('color-bg'),
-    colorAccent: document.getElementById('color-accent'),
-
-    titleSize: document.getElementById('title-size'),
-    // Alignment buttons handled via class selection
-
-    imgScale: document.getElementById('img-scale'),
-    imgPosX: document.getElementById('img-pos-x'),
-    imgPosY: document.getElementById('img-pos-y'),
-    imgFullScreen: document.getElementById('img-fullscreen'),
-
-    logo: document.getElementById('input-logo'),
-    logoSize: document.getElementById('logo-size'),
-
-    // BIO INPUTS
-    bioAvatar: document.getElementById('bio-avatar'),
-    bioName: document.getElementById('bio-name'),
-    bioRole: document.getElementById('bio-role'),
-    bioText: document.getElementById('bio-text'),
-    bioAccent: document.getElementById('bio-color-accent'),
-    bioBg: document.getElementById('bio-bg-image')
-};
-
 const dom = {
+    // Signup
+    signupForm: document.getElementById('signup-form'),
+    signupName: document.getElementById('signup-name'),
+    signupUsername: document.getElementById('signup-username'),
+    signupAvatar: document.getElementById('signup-avatar'),
+    signupAvatarPreview: document.getElementById('signup-avatar-preview'),
+    signupBtn: document.getElementById('signup-btn'),
+    usernameStatus: document.getElementById('username-status'),
+
+    // Header User
+    headerUser: document.getElementById('header-user'),
+    headerAvatar: document.getElementById('header-avatar'),
+    headerName: document.getElementById('header-name'),
+    headerUsername: document.getElementById('header-username'),
+    logoutBtn: document.getElementById('logout-btn'),
+
+    // Editor & Canvas DOM (Merged from old dom)
     canvas: document.getElementById('post-canvas'),
     wrapper: document.querySelector('.canvas-wrapper'),
     carouselControls: document.getElementById('carousel-controls'),
@@ -124,33 +111,247 @@ const dom = {
     nicheGrid: document.querySelector('.niche-grid'),
     tabs: document.querySelectorAll('.tab-btn'),
     tabPanes: document.querySelectorAll('.tab-pane'),
-
-    // Bio
     bioPreviewFrame: document.getElementById('bio-preview-frame'),
     bioLinksList: document.getElementById('bio-links-list')
 };
 
+const inputs = {
+    // Content
+    title: document.getElementById('input-title'),
+    subtitle: document.getElementById('input-subtitle'),
+    text: document.getElementById('input-text'),
+    image: document.getElementById('input-image'),
+    logo: document.getElementById('input-logo'),
+
+    // Bio Inputs
+    bioName: document.getElementById('bio-name'),
+    bioRole: document.getElementById('bio-role'),
+    bioText: document.getElementById('bio-text'),
+    bioAvatar: document.getElementById('bio-avatar'), // hidden file input
+    bioLayout: document.getElementById('bio-layout'),
+    bioFont: document.getElementById('bio-font'),
+    bioBgImage: document.getElementById('bio-bg-image'),
+
+    // Design
+    font: document.getElementById('font-select'),
+    bgColor: document.getElementById('bg-color-picker'),
+    titleColor: document.getElementById('title-color-picker'),
+    subColor: document.getElementById('sub-color-picker'),
+    accentColor: document.getElementById('accent-color-picker'),
+
+    // Controls
+    imageScale: document.getElementById('img-scale'),
+    imageX: document.getElementById('img-pos-x'),
+    imageY: document.getElementById('img-pos-y'),
+    imageFull: document.getElementById('img-fullscreen'),
+    logoSize: document.getElementById('logo-size'),
+    titleSize: document.getElementById('title-size'),
+    textAlign: document.getElementById('text-align'),
+
+    // Bio Font Sizes
+    bioNameSize: document.getElementById('bio-name-size'),
+    bioRoleSize: document.getElementById('bio-role-size'),
+    bioTextSize: document.getElementById('bio-text-size'),
+
+    // Bio Banner
+    bioBanner: document.getElementById('bio-banner'),
+    bioBannerZoom: document.getElementById('bio-banner-zoom'),
+    bioBannerY: document.getElementById('bio-banner-y')
+};
+
 // --- INITIALIZATION ---
 function init() {
-    renderNicheGrid();
+    checkUserLogin();
     setupEventListeners();
-    setupCanvasScaling();
-    window.addEventListener('resize', setupCanvasScaling);
+    // Default values if logged in
+    if (appState.user) {
+        views.signup.classList.add('hidden');
+        views.home.classList.remove('hidden');
+    }
 }
 
-function setupEventListeners() {
-    // Navigation
-    window.goHome = () => {
-        appState.mode = null;
-        switchView('home');
+// --- USER & SIGNUP LOGIC ---
+
+function checkUserLogin() {
+    const savedUser = localStorage.getItem('creator_studio_user');
+    if (savedUser) {
+        appState.user = JSON.parse(savedUser);
+        updateHeaderUser();
+        // Pre-fill bio with user data
+        appState.bio.name = appState.user.name;
+        appState.bio.avatar = appState.user.avatar;
+
+        views.signup.classList.add('hidden');
+        views.home.classList.remove('hidden');
+    } else {
+        views.signup.classList.remove('hidden');
+        views.home.classList.add('hidden');
+    }
+}
+
+function updateHeaderUser() {
+    if (!appState.user) return;
+    dom.headerAvatar.src = appState.user.avatar;
+    dom.headerName.textContent = appState.user.name;
+    dom.headerUsername.textContent = '@' + appState.user.username;
+}
+
+function handleLogout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        localStorage.removeItem('creator_studio_user');
+        appState.user = null;
+        window.location.reload();
+    }
+}
+
+// Avatar Preview in Signup
+dom.signupAvatar.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            dom.signupAvatarPreview.src = e.target.result;
+            appState.uploadedAvatar = e.target.result; // temp storage
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Username Validation (Debounced)
+let debounceTimer;
+dom.signupUsername.addEventListener('input', (e) => {
+    const username = e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+    e.target.value = username; // Force clean value
+
+    dom.usernameStatus.textContent = 'Verificando...';
+    dom.usernameStatus.className = 'username-status checking';
+    dom.signupBtn.disabled = true;
+
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(async () => {
+        if (username.length < 3) {
+            dom.usernameStatus.textContent = 'Mínimo 3 caracteres';
+            dom.usernameStatus.className = 'username-status taken';
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/check-username/${username}`);
+            const data = await res.json();
+
+            if (data.available) {
+                dom.usernameStatus.textContent = '✓ Disponível';
+                dom.usernameStatus.className = 'username-status available';
+                dom.signupBtn.disabled = false;
+            } else {
+                dom.usernameStatus.textContent = '✗ ' + (data.reason || 'Indisponível');
+                dom.usernameStatus.className = 'username-status taken';
+                dom.signupBtn.disabled = true;
+            }
+        } catch (err) {
+            console.error(err);
+            dom.usernameStatus.textContent = 'Erro ao verificar';
+        }
+    }, 500);
+});
+
+// Signup Submit
+dom.signupForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const user = {
+        name: dom.signupName.value,
+        username: dom.signupUsername.value,
+        avatar: appState.uploadedAvatar || dom.signupAvatarPreview.src
     };
-    window.goNiche = () => switchView('niche');
+
+    localStorage.setItem('creator_studio_user', JSON.stringify(user));
+    appState.user = user;
+
+    // Transition
+    checkUserLogin();
+});
+
+dom.logoutBtn.addEventListener('click', handleLogout);
+
+// --- NAVIGATION ---
+function startFlow(mode) {
+    appState.mode = mode;
+    views.home.classList.add('hidden');
+    views.niche.classList.remove('hidden');
+    renderNiches();
+}
+
+function startBioFlow() {
+    appState.mode = 'bio';
+    views.home.classList.add('hidden');
+    views.bio.classList.remove('hidden');
+
+    // Init Bio Preview
+    inputs.bioName.value = appState.bio.name;
+    inputs.bioRole.value = appState.bio.role;
+    inputs.bioText.value = appState.bio.text;
+
+    renderLinks();
+    renderBioPreview();
+}
+
+function goHome() {
+    hideAllViews();
+    views.home.classList.remove('hidden');
+}
+
+function goNiche() {
+    hideAllViews();
+    views.niche.classList.remove('hidden');
+}
+
+function hideAllViews() {
+    views.home.classList.add('hidden');
+    views.niche.classList.add('hidden');
+    views.editor.classList.add('hidden');
+    views.bio.classList.add('hidden');
+    views.signup.classList.add('hidden');
+}
+
+// ... (Rest of existing functions: renderNiches, selectNiche, etc.)
+// ... (Including the updated generateBioHTML and renderBioPreview logic from previous steps)
+
+function setupEventListeners() {
+    // Mode Selection is inline onclick
+
+    // Editor Tabs
+    setupEditorListeners();
+    // Expose publish function for HTML onclick
+    window.openPublishModal = publishLinkInBio;
+}
+
+function renderNicheGrid() {
+    if (!dom.nicheGrid || typeof niches === 'undefined') return;
+    dom.nicheGrid.innerHTML = niches.map(niche => `
+        <div class="niche-item" data-id="${niche.id}">
+            <div class="niche-icon">${niche.icon}</div>
+            <div class="niche-name">${niche.title}</div>
+        </div>
+    `).join('');
+}
+
+function setupCanvasScaling() {
+    if (!dom.wrapper || !dom.canvas) return;
+    // Simple scaling logic
+    const padding = 40;
+    const availH = dom.wrapper.clientHeight - padding;
+    const scale = Math.min(1, availH / 1350); // fit height
+    dom.canvas.style.transform = `scale(${scale})`;
+}
+
+function setupEditorListeners() {
+    // Navigation
     window.switchTab = switchTab;
     window.setAlignment = setAlignment;
-    window.startBioFlow = startBioFlow;
     window.addBioLink = addBioLink;
     window.removeBioLink = removeBioLink; // exposed global
-    window.downloadBioSite = downloadBioSite;
+    // window.downloadBioSite removed (replaced publish-bio-btn)
 
     // Niche Selection
     if (dom.nicheGrid) {
@@ -308,11 +509,7 @@ function handleSmartList(e) {
 
 // --- LOGIC: DATA ---
 
-window.startFlow = (mode) => {
-    appState.mode = mode;
-    appState.slides = [];
-    switchView('niche');
-};
+
 
 function selectNiche(nicheId) {
     appState.niche = niches.find(n => n.id === nicheId);
