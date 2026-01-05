@@ -1004,3 +1004,257 @@ input[type=range]::-webkit-slider-runnable-track {
     background-color: #1f2937;
     color: white;
 }
+
+/* ==================== MODAL STYLES ==================== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius);
+    max-width: 450px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #f3f4f6;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #e5e7eb;
+    transform: scale(1.1);
+}
+
+.slug-input-wrapper {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #f9fafb;
+}
+
+.slug-prefix {
+    padding: 0.875rem 0.5rem 0.875rem 1rem;
+    background: #e5e7eb;
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.slug-input-wrapper input {
+    border: none;
+    padding: 0.875rem 1rem 0.875rem 0.25rem;
+    flex: 1;
+    background: transparent;
+}
+
+.slug-input-wrapper input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ==================== RESPONSIVE MOBILE ==================== */
+@media (max-width: 900px) {
+    #app {
+        padding: 1rem;
+    }
+
+    .editor-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        gap: 1rem;
+    }
+
+    .controls-panel {
+        order: 2;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .canvas-area {
+        order: 1;
+        padding: 1rem;
+        min-height: 300px;
+    }
+
+    .canvas-wrapper {
+        transform: scale(0.35) !important;
+        transform-origin: top center;
+        margin-bottom: -850px !important;
+    }
+
+    .editor-header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .header-left,
+    .header-right {
+        width: 100%;
+        text-align: center;
+    }
+
+    .header-right {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .feed-preview-container {
+        display: none;
+    }
+
+    .iphone-mockup {
+        transform: scale(0.7);
+    }
+}
+
+@media (max-width: 600px) {
+    .mode-selection {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1rem;
+    }
+
+    .mode-card {
+        width: 100%;
+        max-width: 320px;
+        padding: 1.5rem;
+    }
+
+    .divider-v {
+        display: none;
+    }
+
+    .main-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .signup-card {
+        padding: 1.5rem;
+    }
+
+    .editor-tabs {
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+
+    .tab-btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .canvas-wrapper {
+        transform: scale(0.28) !important;
+        margin-bottom: -950px !important;
+    }
+
+    .iphone-mockup {
+        transform: scale(0.55);
+    }
+
+    .primary-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .secondary-btn {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* ==================== USERNAME VALIDATION ==================== */
+.username-rules {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+}
+
+.username-rules.valid {
+    color: #10b981;
+}
+
+.username-rules.invalid {
+    color: #ef4444;
+}
+
+/* ==================== DARK THEME BIO CONTROLS ==================== */
+#bio-view .controls-panel {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+
+#bio-view .controls-panel h3 {
+    color: #f8fafc;
+}
+
+#bio-view .controls-panel label {
+    color: #cbd5e1;
+}
+
+#bio-view .controls-panel input[type="text"],
+#bio-view .controls-panel textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #334155;
+    color: white;
+}
+
+#bio-view .controls-panel input[type="text"]:focus,
+#bio-view .controls-panel textarea:focus {
+    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#bio-view .divider {
+    background: #334155;
+}
+
+.w-full {
+    width: 100%;
+}
