@@ -223,5 +223,139 @@ const niches = [
             { title: 'Nutrição', sub: 'O que comer no pré-treino para ter energia.', layout: 'modern-cover' },
             { title: 'Desafio da Sexta', sub: 'Quem aguenta mais tempo na prancha?', layout: 'modern-quote' }
         ]
+    },
+    // =============== NICHOS FEMININOS EMPREENDEDORES ===============
+    {
+        id: 'estetica',
+        title: 'Estética & Beleza',
+        icon: '💆‍♀️',
+        description: 'Elegante, sofisticado e acolhedor.',
+        colors: { primary: '#E91E63', secondary: '#F8BBD9', bg: '#FFF0F5', text: '#880E4F' },
+        font: "'Playfair Display', serif",
+        hashtags: "#estetica #beleza #skincare #autocuidado #esteticista #peleperfeita",
+        prompts: {
+            cover: 'PELE RADIANTE',
+            list: '1. Limpeza diária\\n2. Hidratação\\n3. Proteção solar\\n4. Tratamentos mensais',
+            quote: 'Beleza começa quando você decide ser você mesma.',
+            cta: 'Agende sua avaliação gratuita.'
+        },
+        weekPlan: [
+            { title: 'Segunda do Skincare', sub: 'A rotina matinal que sua pele precisa.', layout: 'modern-list' },
+            { title: 'Mito ou Verdade?', sub: 'Esfoliação pode ser feita diariamente?', layout: 'modern-cover' },
+            { title: 'Antes e Depois', sub: 'Resultado incrível de limpeza de pele.', layout: 'modern-photo' },
+            { title: 'Dica de Ouro', sub: 'O ingrediente secreto para olheiras.', layout: 'modern-quote' },
+            { title: 'Promoção Especial', sub: 'Venha se cuidar no fim de semana.', layout: 'modern-cover' }
+        ]
+    },
+    {
+        id: 'confeitaria',
+        title: 'Confeitaria & Doces',
+        icon: '🧁',
+        description: 'Doce, delicado e irresistível.',
+        colors: { primary: '#EC407A', secondary: '#FCE4EC', bg: '#FFF8E1', text: '#AD1457' },
+        font: "'Dancing Script', cursive",
+        hashtags: "#confeitaria #bolosdecorados #docesgourmet #festas #brigadeirogourmet #cupcakes",
+        prompts: {
+            cover: 'DOCES QUE ENCANTAM',
+            list: '• Bolo personalizado\\n• Brigadeiros gourmet\\n• Cupcakes decorados',
+            quote: 'A vida é mais doce com o sabor certo.',
+            cta: 'Encomende para sua festa!'
+        },
+        weekPlan: [
+            { title: 'Inspire-se', sub: 'Tendências de decoração para bolos 2024.', layout: 'modern-photo' },
+            { title: 'Receita da Semana', sub: 'O segredo do brigadeiro perfeito.', layout: 'modern-list' },
+            { title: 'Bastidores', sub: 'Preparando uma encomenda especial.', layout: 'modern-photo' },
+            { title: 'Depoimento', sub: 'O que nossos clientes dizem.', layout: 'modern-quote' },
+            { title: 'Novidade', sub: 'Novo sabor disponível para encomenda!', layout: 'modern-cover' }
+        ]
+    },
+    {
+        id: 'nailart',
+        title: 'Nail Art & Manicure',
+        icon: '💅',
+        description: 'Criativo, colorido e sofisticado.',
+        colors: { primary: '#D81B60', secondary: '#F48FB1', bg: '#FCE4EC', text: '#880E4F' },
+        font: "'Poppins', sans-serif",
+        hashtags: "#nailart #unhasdecoradas #manicure #unhasdegel #esmaltes #naildesign",
+        prompts: {
+            cover: 'UNHAS DE DIVA',
+            list: '• Alongamento\\n• Nail Art\\n• Esmaltação em gel\\n• Spa das mãos',
+            quote: 'Suas mãos merecem um toque especial.',
+            cta: 'Agende seu horário!'
+        },
+        weekPlan: [
+            { title: 'Tendência da Semana', sub: 'As cores que estão bombando.', layout: 'modern-photo' },
+            { title: 'Passo a Passo', sub: 'Como fazer francesinha perfeita.', layout: 'modern-list' },
+            { title: 'Transformação', sub: 'De unha roída a unha de princesa.', layout: 'modern-photo' },
+            { title: 'Dica Anti-Quebra', sub: 'Cuide das suas unhas em casa.', layout: 'modern-cover' },
+            { title: 'Última Vaga', sub: 'Horários disponíveis para sábado!', layout: 'modern-quote' }
+        ]
+    },
+    {
+        id: 'coaching',
+        title: 'Coaching Feminino',
+        icon: '✨',
+        description: 'Empoderador e transformador.',
+        colors: { primary: '#9C27B0', secondary: '#E1BEE7', bg: '#F3E5F5', text: '#4A148C' },
+        font: "'Montserrat', sans-serif",
+        hashtags: "#coachingfeminino #empoderamento #desenvolvimentopessoal #mulheresqueinspiran #mentorafeminina",
+        prompts: {
+            cover: 'DESPERTE SEU POTENCIAL',
+            list: '1. Autoconhecimento\\n2. Metas claras\\n3. Ação consistente\\n4. Celebre vitórias',
+            quote: 'Você é mais forte do que imagina.',
+            cta: 'Comece sua transformação hoje.'
+        },
+        weekPlan: [
+            { title: 'Motivação', sub: 'A frase que vai mudar sua semana.', layout: 'modern-quote' },
+            { title: 'Exercício Prático', sub: '3 perguntas para se conhecer melhor.', layout: 'modern-list' },
+            { title: 'História Real', sub: 'Como a Maria superou a síndrome da impostora.', layout: 'modern-photo' },
+            { title: 'Live Especial', sub: 'Tema: Como definir metas alcançáveis.', layout: 'modern-cover' },
+            { title: 'Reflexão', sub: 'O que você conquistou essa semana?', layout: 'modern-quote' }
+        ]
+    },
+    {
+        id: 'artesanato',
+        title: 'Artesanato & Handmade',
+        icon: '🧶',
+        description: 'Aconchegante e autêntico.',
+        colors: { primary: '#8D6E63', secondary: '#D7CCC8', bg: '#EFEBE9', text: '#4E342E' },
+        font: "'Lora', serif",
+        hashtags: "#artesanato #feitoamao #handmade #croche #tricot #artesanal",
+        prompts: {
+            cover: 'FEITO COM AMOR',
+            list: '• Peças exclusivas\\n• Materiais nobres\\n• Personalização',
+            quote: 'Cada peça conta uma história.',
+            cta: 'Encomende a sua.'
+        },
+        weekPlan: [
+            { title: 'Nova Coleção', sub: 'Inspire-se com as novidades da semana.', layout: 'modern-photo' },
+            { title: 'DIY Simples', sub: 'Aprenda a fazer um porta-copos lindo.', layout: 'modern-list' },
+            { title: 'Processo Criativo', sub: 'Do fio à obra-prima.', layout: 'modern-photo' },
+            { title: 'Depoimento', sub: 'Amanda amou seu kit personalizado!', layout: 'modern-quote' },
+            { title: 'Pronta Entrega', sub: 'Peças disponíveis para envio imediato.', layout: 'modern-cover' }
+        ]
+    },
+    {
+        id: 'consultoria_imagem',
+        title: 'Consultoria de Imagem',
+        icon: '👠',
+        description: 'Sofisticado e transformador.',
+        colors: { primary: '#00897B', secondary: '#B2DFDB', bg: '#E0F2F1', text: '#004D40' },
+        font: "'Lato', sans-serif",
+        hashtags: "#consultoriadeimagem #estilopessoal #coloraçaopessoal #guarda-roupacapsula #imagemeprofissao",
+        prompts: {
+            cover: 'DESCUBRA SEU ESTILO',
+            list: '1. Análise de coloração\\n2. Estudo de biotipo\\n3. Organização do guarda-roupa',
+            quote: 'Vista-se para a vida que você quer ter.',
+            cta: 'Agende sua consultoria.'
+        },
+        weekPlan: [
+            { title: 'Dica de Estilo', sub: 'Como montar looks com poucas peças.', layout: 'modern-list' },
+            { title: 'Coloração Pessoal', sub: 'Descubra se você é quente ou fria.', layout: 'modern-photo' },
+            { title: 'Transformação', sub: 'Antes e depois da consultoria.', layout: 'modern-photo' },
+            { title: 'Erros Comuns', sub: 'O que evitar na hora de se vestir.', layout: 'modern-cover' },
+            { title: 'Convite', sub: 'Workshop online: Guarda-roupa cápsula.', layout: 'modern-quote' }
+        ]
     }
 ];
+
