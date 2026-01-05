@@ -1,0 +1,15 @@
+{
+  "name": "bio-link-creator-server",
+  "version": "1.0.0",
+  "description": "Backend local para publicar sites do Bio Link Creator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.18.2",
+    "octokit": "^5.0.5"
+  }
+}

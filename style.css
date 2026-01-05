@@ -1,0 +1,759 @@
+:root {
+    --bg-color: #F3F4F6;
+    --surface-color: #FFFFFF;
+    --primary-color: #6366F1;
+    --primary-dark: #4F46E5;
+    --text-main: #111827;
+    --text-muted: #6B7280;
+    --border: #E5E7EB;
+    --radius: 16px;
+    --radius-sm: 8px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+#app {
+    width: 100%;
+    max-width: 1440px;
+    padding: 2rem;
+}
+
+/* Headers */
+.main-header,
+.view-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.main-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.main-header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.divider {
+    border: 0;
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+}
+
+/* Mode Selection Cards */
+.mode-selection {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 2rem;
+}
+
+.mode-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    width: 320px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mode-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-color);
+}
+
+.mode-icon {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.mode-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.mode-card p {
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Niche Grid */
+.niche-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.niche-item {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.niche-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.niche-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.niche-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Editor Layout */
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background: white;
+    padding: 1rem 2rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.back-link {
+    background: none;
+    border: none;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.back-link:hover {
+    color: var(--primary-color);
+}
+
+.primary-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 100px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.primary-btn:hover {
+    background: var(--primary-dark);
+}
+
+.editor-container {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 2rem;
+    height: calc(100vh - 150px);
+}
+
+/* Controls */
+.controls-panel {
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    overflow-y: auto;
+    border: 1px solid var(--border);
+}
+
+.control-group {
+    margin-bottom: 1.25rem;
+}
+
+.control-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.95rem;
+    background: #F9FAFB;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--primary-color);
+    background: white;
+}
+
+/* Brand Section */
+.brand-section {
+    background: #F0F9FF;
+    /* Light blue tint to stand out */
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid #BAE6FD;
+    margin-bottom: 1.5rem;
+}
+
+.brand-section h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0369A1;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.color-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    background: none;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+/* File Input Styling */
+.file-input-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-btn {
+    background: #F3F4F6;
+    color: var(--text-main);
+    border: 1px dashed #D1D5DB;
+    padding: 1rem;
+    text-align: center;
+    display: block;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    width: 100%;
+}
+
+.file-input-wrapper:hover .file-btn {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Slide Navigation */
+.slide-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #F9FAFB;
+    padding: 0.5rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 1rem;
+}
+
+.nav-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--border);
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.nav-btn.action {
+    background: #E0E7FF;
+    color: var(--primary-dark);
+    border: none;
+}
+
+.nav-btn.danger {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: none;
+}
+
+#slide-indicator {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Feed Preview */
+.feed-preview-container {
+    margin-top: 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 500px;
+    /* Keep it phone-like width relative to canvas */
+}
+
+.feed-header {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.feed-header h3 {
+    font-size: 1rem;
+    color: #333;
+}
+
+.feed-header p {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.feed-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    /* Tiny gap like Insta */
+    background: white;
+    border: 1px solid #eee;
+}
+
+.feed-item {
+    aspect-ratio: 4/5;
+    /* Portrait ratio */
+    background: #f0f0f0;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+}
+
+.feed-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.feed-item.active {
+    outline: 3px solid var(--primary);
+    z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1000px) {
+    .editor-container {
+        flex-direction: column;
+    }
+
+    .canvas-area {
+        order: -1;
+    }
+}
+
+/* Preview Area */
+.preview-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #E5E7EB;
+    border-radius: var(--radius);
+    padding: 2rem;
+    overflow: hidden;
+}
+
+/* Canvas Area */
+.canvas-area {
+    background: #e2e8f0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    /* Start from top so it doesn't get cut off */
+    padding: 2rem;
+    overflow-y: auto;
+    position: relative;
+    border-radius: var(--radius);
+}
+
+/* Smart Export Toast */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: opacity 0.3s, transform 0.3s;
+    opacity: 1;
+}
+
+.toast.hidden {
+    opacity: 0;
+    transform: translate(-50%, 20px);
+    pointer-events: none;
+}
+
+.canvas-wrapper {
+    width: 1080px;
+    height: 1350px;
+    background: white;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform-origin: top center;
+    transition: transform 0.2s ease;
+    /* We handle sizing via JS transform */
+    flex-shrink: 0;
+    /* Prevent squishing */
+    margin-bottom: 2rem;
+}
+
+.post-canvas {
+    width: 1080px;
+    height: 1350px;
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    /* No scale here, we scale the wrapper in JS or parent CSS */
+    flex-shrink: 0;
+}
+
+/* TABS STYLING */
+.editor-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #E5E7EB;
+    padding-bottom: 0.5rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    background: #F3F4F6;
+    color: var(--text-main);
+}
+
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* DESIGN SECTION */
+.design-section {
+    margin-bottom: 1.5rem;
+}
+
+.design-section h4 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.control-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.control-row label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.control-row input[type="range"] {
+    width: 60%;
+}
+
+/* INPUT RANGES */
+input[type=range] {
+    -webkit-appearance: none;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    margin-top: -6px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: #E5E7EB;
+    border-radius: 2px;
+}
+
+/* COMPACT CONTROLS */
+.control-group-compact {
+    margin-bottom: 0.75rem;
+}
+
+.compact-select {
+    padding: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.checkbox-label {
+    font-size: 0.85rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+/* ALIGN BUTTONS */
+.align-buttons {
+    display: flex;
+    background: #F3F4F6;
+    border-radius: var(--radius-sm);
+    padding: 2px;
+}
+
+.align-btn {
+    flex: 1;
+    border: none;
+    background: none;
+    padding: 0.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.align-btn.active {
+    background: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* COLORS GRID */
+.colors-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+
+.color-item {
+    text-align: center;
+}
+
+.color-item input[type="color"] {
+    width: 100%;
+    height: 36px;
+    border-radius: 6px;
+    padding: 0;
+    border: 1px solid var(--border);
+}
+
+
+/* --- BIO CREATOR STYLES --- */
+.secondary-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-main);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.secondary-btn:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: #F9FAFB;
+}
+
+.bio-links-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.bio-link-item {
+    background: #F9FAFB;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.bio-link-item input {
+    margin-bottom: 0;
+    background: white;
+}
+
+.bio-link-remove {
+    background: #FEE2E2;
+    color: #DC2626;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+/* iPhone Mockup */
+.iphone-mockup {
+    width: 375px;
+    height: 812px;
+    background: #000;
+    border-radius: 40px;
+    border: 12px solid #222;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: scale(0.85);
+    /* Default scale to fit */
+    transform-origin: top center;
+}
+
+/* Dynamic Dynamic Island/Notch simulation */
+.iphone-mockup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 30px;
+    background: #222;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    z-index: 1000;
+}
+
+.iphone-screen {
+    width: 100%;
+    height: 100%;
+    background: #111;
+    /* Default Dark Theme */
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.iphone-screen::-webkit-scrollbar {
+    display: none;
+    /* Chrome */
+}
+
+/* --- WEBMINI CLONE STYLES (Injected into preview, but defined here for reference or fallback) --- */
+/* These styles will largely be inline in the generated HTML or injected styles, 
+   but we can add some helpers here if needed */
+.mode-card.highlight {
+    border: 2px solid var(--primary-color);
+    background: #EEF2FF;
+}
+
+.divider-v {
+    width: 1px;
+    background: var(--border);
+    height: auto;
+    margin: 0 1rem;
+}

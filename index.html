@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Studio</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Lato:wght@300;400;700&family=Lora:ital,wght@0,400;0,600;1,400&family=Merriweather:wght@300;700&family=Montserrat:wght@400;700;800&family=Open+Sans:wght@400;700&family=Oswald:wght@400;700&family=Outfit:wght@400;700;900&family=Playfair+Display:wght@700&family=Poppins:wght@300;400;700&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
+    <!-- html-to-image library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.js"></script>
+</head>
+
+<body>
+
+    <main id="app">
+        <!-- VIEW: MODE SELECTION (HOME) -->
+        <section id="home-view" class="active">
+            <header class="main-header">
+                <h1>Creator Studio</h1>
+                <p>O que você planeja criar hoje?</p>
+            </header>
+
+            <div class="mode-selection">
+                <button class="mode-card" onclick="startFlow('single')">
+                    <div class="mode-icon">🖼️</div>
+                    <h2>Criar Post Único</h2>
+                    <p>Ideal para avisos, frases e promoções rápidas.</p>
+                </button>
+                <button class="mode-card" onclick="startFlow('carousel')">
+                    <div class="mode-icon">📚</div>
+                    <h2>Criar Carrossel</h2>
+                    <p>Conteúdo profundo em até 10 slides contínuos.</p>
+                </button>
+                <button class="mode-card" onclick="startFlow('week')">
+                    <div class="mode-icon">📆</div>
+                    <h2>Planejar Semana</h2>
+                    <p>Gere 5 posts estratégicos (Seg-Sex) com um clique.</p>
+                </button>
+                <div class="divider-v"></div>
+                <button class="mode-card highlight" onclick="startBioFlow()">
+                    <div class="mode-icon">🔗</div>
+                    <h2>Link na Bio</h2>
+                    <p>Crie um Mini-Site estilo App para sua biografia.</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- VIEW: NICHE SELECTION -->
+        <section id="niche-selection-view" class="hidden">
+            <header class="view-header">
+                <button class="back-link" onclick="goHome()">← Voltar</button>
+                <h2>Escolha a identidade do seu nicho</h2>
+            </header>
+            <div class="niche-grid">
+                <!-- Niches injected here -->
+            </div>
+        </section>
+
+        <!-- VIEW: EDITOR -->
+        <section id="editor-view" class="hidden">
+            <header class="editor-header">
+                <div class="header-left">
+                    <button class="back-link" onclick="goNiche()">← Voltar</button>
+                    <h2 id="editor-title">Editando Post</h2>
+                </div>
+                <div class="header-right">
+                    <button id="download-btn" class="primary-btn">Baixar Imagem</button>
+                </div>
+            </header>
+
+            <div class="editor-container">
+                <!-- CONTROLS -->
+                <aside class="controls-panel">
+
+                    <!-- TAB NAVIGATION -->
+                    <div class="editor-tabs">
+                        <button id="tab-btn-content" class="tab-btn active" onclick="switchTab('content')">📝
+                            Conteúdo</button>
+                        <button id="tab-btn-design" class="tab-btn" onclick="switchTab('design')">🎨 Design</button>
+                    </div>
+
+                    <!-- TAB: CONTENT (Default) -->
+                    <div id="tab-content" class="tab-pane active">
+
+                        <!-- Carousel Navigation -->
+                        <div id="carousel-controls" class="hidden">
+                            <label>Gerenciar Slides</label>
+                            <div class="slide-nav">
+                                <button id="prev-slide" class="nav-btn">◀</button>
+                                <span id="slide-indicator">Slide 1/1</span>
+                                <button id="next-slide" class="nav-btn">▶</button>
+                                <button id="add-slide" class="nav-btn action">+</button>
+                                <button id="remove-slide" class="nav-btn danger">×</button>
+                            </div>
+                            <hr class="divider">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Estilo Visual (Layout)</label>
+                            <select id="layout-select"></select>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Título / Manchete</label>
+                            <textarea id="input-title" rows="2" placeholder="Digite o destaque..."></textarea>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Texto Principal / Conteúdo</label>
+                            <textarea id="input-subtitle" rows="5" placeholder="Digite o conteúdo..."></textarea>
+                            <small class="hint" style="font-size: 0.75rem; color: #666;">Dica: Use "Enter" para criar
+                                listas.</small>
+                        </div>
+
+                        <div class="control-group">
+                            <label>Rodapé / @Usuario</label>
+                            <input type="text" id="input-footer" placeholder="@seu.perfil">
+                        </div>
+
+                        <div class="control-group">
+                            <label>Imagem de Fundo</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="input-image" accept="image/*">
+                                <span class="file-btn">Escolher Foto</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB: DESIGN (Power-Up) -->
+                    <div id="tab-design" class="tab-pane hidden">
+
+                        <!-- IMAGE CONTROLS -->
+                        <div class="design-section">
+                            <h4>🖼️ Ajustes de Imagem</h4>
+                            <div class="control-row">
+                                <label>Zoom</label>
+                                <input type="range" id="img-scale" min="1" max="3" step="0.1" value="1">
+                            </div>
+                            <div class="control-row">
+                                <label>Posição X</label>
+                                <input type="range" id="img-pos-x" min="0" max="100" step="1" value="50">
+                            </div>
+                            <div class="control-row">
+                                <label>Posição Y</label>
+                                <input type="range" id="img-pos-y" min="0" max="100" step="1" value="50">
+                            </div>
+                            <label class="checkbox-label"
+                                style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="img-fullscreen"> Fundo Tela Cheia (Capa)
+                            </label>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- TYPOGRAPHY -->
+                        <div class="design-section">
+                            <h4>🔤 Tipografia</h4>
+
+                            <div class="control-group-compact">
+                                <label>Fonte Principal</label>
+                                <select id="brand-font" class="compact-select" style="width: 100%;">
+                                    <option value="default">Padrão do Nicho</option>
+                                    <optgroup label="Modernas (Sans Serif)">
+                                        <option value="'Inter', sans-serif">Inter</option>
+                                        <option value="'Roboto', sans-serif">Roboto</option>
+                                        <option value="'Open Sans', sans-serif">Open Sans</option>
+                                        <option value="'Montserrat', sans-serif">Montserrat</option>
+                                        <option value="'Poppins', sans-serif">Poppins</option>
+                                        <option value="'Lato', sans-serif">Lato</option>
+                                    </optgroup>
+                                    <optgroup label="Clássicas (Serif)">
+                                        <option value="'Playfair Display', serif">Playfair Display</option>
+                                        <option value="'Merriweather', serif">Merriweather</option>
+                                        <option value="'Lora', serif">Lora</option>
+                                    </optgroup>
+                                    <optgroup label="Destaque / Títulos">
+                                        <option value="'Oswald', sans-serif">Oswald</option>
+                                        <option value="'Bebas Neue', cursive">Bebas Neue</option>
+                                    </optgroup>
+                                    <optgroup label="Manuscritas">
+                                        <option value="'Dancing Script', cursive">Dancing Script</option>
+                                        <option value="'Caveat', cursive">Caveat</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                            <div class="control-row" style="margin-top: 10px;">
+                                <label>Tam. Texto</label>
+                                <input type="range" id="title-size" min="50" max="200" value="100">
+                            </div>
+
+                            <div class="align-buttons" id="text-align-wrapper"
+                                style="margin-top: 8px; display: flex; gap: 5px;">
+                                <button type="button" class="align-btn active" data-align="left"
+                                    onclick="setAlignment('left')">⬅️</button>
+                                <button type="button" class="align-btn" data-align="center"
+                                    onclick="setAlignment('center')">⏺️</button>
+                                <button type="button" class="align-btn" data-align="right"
+                                    onclick="setAlignment('right')">➡️</button>
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- COLORS -->
+                        <div class="design-section">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4>🎨 Cores</h4>
+                                <label style="font-size: 0.8rem;"><input type="checkbox" id="use-custom-colors">
+                                    Ativar</label>
+                            </div>
+                            <div class="colors-grid"
+                                style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+                                <div class="color-item"
+                                    style="display: flex; flex-direction: column; align-items: center;">
+                                    <input type="color" id="color-title" value="#000000">
+                                    <label style="font-size: 0.75rem;">Título</label>
+                                </div>
+                                <div class="color-item"
+                                    style="display: flex; flex-direction: column; align-items: center;">
+                                    <input type="color" id="color-sub" value="#000000">
+                                    <label style="font-size: 0.75rem;">Texto</label>
+                                </div>
+                                <div class="color-item"
+                                    style="display: flex; flex-direction: column; align-items: center;">
+                                    <input type="color" id="color-bg" value="#ffffff">
+                                    <label style="font-size: 0.75rem;">Fundo</label>
+                                </div>
+                                <div class="color-item"
+                                    style="display: flex; flex-direction: column; align-items: center;">
+                                    <input type="color" id="color-accent" value="#3b82f6">
+                                    <label style="font-size: 0.75rem;">Detalhe</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="divider">
+
+                        <!-- LOGO -->
+                        <div class="design-section">
+                            <h4>🏢 Sua Logo</h4>
+                            <div class="file-input-wrapper small">
+                                <input type="file" id="input-logo" accept="image/png">
+                                <span class="file-btn" style="font-size: 0.8rem; padding: 4px 8px;">Upload PNG</span>
+                            </div>
+                            <div class="control-row" style="margin-top:8px;">
+                                <label>Tam. Logo</label>
+                                <input type="range" id="logo-size" min="20" max="150" value="80">
+                            </div>
+                        </div>
+
+                    </div>
+                </aside>
+
+                <!-- PREVIEW AREA -->
+                <div class="canvas-area">
+                    <div class="canvas-wrapper">
+                        <div id="post-canvas" class="post-canvas">
+                            <!-- Template Rendered Here -->
+                        </div>
+                    </div>
+
+                    <!-- Feed Preview Toggle -->
+                    <div class="feed-preview-container">
+                        <div class="feed-header">
+                            <h3>📱 Preview do Feed</h3>
+                            <p>Veja como fica no perfil</p>
+                        </div>
+                        <div id="feed-grid" class="feed-grid">
+                            <!-- Thumbnails injected here -->
+                        </div>
+                    </div>
+                    <p class="preview-note" id="preview-note">Preview (1080x1350px)</p>
+                </div>
+            </div>
+            <!-- TOAST NOTIFICATION -->
+            <div id="toast" class="toast hidden">Imagem Baixada & Legenda Copiada! ✅</div>
+        </section>
+
+        <!-- VIEW: BIO EDITOR (New) -->
+        <section id="bio-view" class="hidden">
+            <header class="editor-header">
+                <div class="header-left">
+                    <button class="back-link" onclick="goHome()">← Voltar</button>
+                    <h2>Criador de Link na Bio</h2>
+                </div>
+                <div class="header-right" style="display:flex; gap:10px;">
+                    <button id="publish-bio-btn" class="secondary-btn" onclick="openPublishModal()"
+                        style="background:#24292e; color:white; border:none; display:flex; align-items:center; gap:8px;">
+                        🚀 Publicar Online
+                    </button>
+                    <button id="download-bio-btn" class="primary-btn" onclick="downloadBioSite()">Baixar Site
+                        (.html)</button>
+                </div>
+            </header>
+
+            <div class="editor-container">
+                <!-- BIO CONTROLS -->
+                <aside class="controls-panel">
+                    <h3>👤 Perfil</h3>
+                    <div class="control-group">
+                        <label>Foto de Perfil</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="bio-avatar" accept="image/*">
+                            <span class="file-btn">Upload Foto</span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="bio-name" placeholder="Ex: Jhonatan Peixoto">
+                    </div>
+                    <div class="control-group">
+                        <label>Cargo / Subtítulo</label>
+                        <input type="text" id="bio-role" placeholder="Ex: Empreendedor Digital">
+                    </div>
+                    <div class="control-group">
+                        <label>Bio (Curta)</label>
+                        <textarea id="bio-text" rows="3"
+                            placeholder="Ex: Ajudo você a escalar seu negócio..."></textarea>
+                    </div>
+
+                    <hr class="divider">
+
+                    <h3>🔗 Links Principais</h3>
+                    <div id="bio-links-list" class="bio-links-list">
+                        <!-- Dynamic Links -->
+                    </div>
+
+                    <button onclick="addBioLink()"
+                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px dashed rgba(255,255,255,0.2); border-radius:8px; color:#cbd5e1; margin-top:10px; margin-bottom: 20px; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='white'; this.style.color='white'"
+                        onmouseout="this.style.borderColor='rgba(255,255,255,0.2)'; this.style.color='#cbd5e1'">
+                        + Adicionar Novo Link
+                    </button>
+
+                    <button id="save-bio-btn" class="primary-btn w-full" style="background: #10B981; border: none;">💾
+                        Salvar Alterações</button>
+
+                    <hr class="divider">
+
+                    <h3>🎨 Aparência e Layout</h3>
+
+                    <!-- FONTES -->
+                    <div class="control-group">
+                        <label>Fonte Principal</label>
+                        <select id="bio-font"
+                            style="width: 100%; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: white; border: 1px solid #333;">
+                            <optgroup label="Modernas (Sans Serif)">
+                                <option value="'Montserrat', sans-serif">Montserrat (Padrão)</option>
+                                <option value="'Inter', sans-serif">Inter</option>
+                                <option value="'Roboto', sans-serif">Roboto</option>
+                                <option value="'Poppins', sans-serif">Poppins</option>
+                                <option value="'Lato', sans-serif">Lato</option>
+                                <option value="'Open Sans', sans-serif">Open Sans</option>
+                                <option value="'Outfit', sans-serif">Outfit</option>
+                            </optgroup>
+                            <optgroup label="Clássicas (Serif)">
+                                <option value="'Playfair Display', serif">Playfair Display</option>
+                                <option value="'Merriweather', serif">Merriweather</option>
+                                <option value="'Lora', serif">Lora</option>
+                            </optgroup>
+                            <optgroup label="Estilizadas">
+                                <option value="'Bebas Neue', cursive">Bebas Neue</option>
+                                <option value="'Oswald', sans-serif">Oswald</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- TAMANHOS DE TEXTO -->
+                    <div class="control-group"
+                        style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
+                        <label style="margin-bottom: 10px; display: block;">📐 Tamanhos de Texto</label>
+
+                        <div style="margin-bottom: 10px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Nome</span>
+                                <span id="bio-name-size-value" style="font-size: 0.7rem; color: #666;">100%</span>
+                            </div>
+                            <input type="range" id="bio-name-size" min="70" max="150" value="100" style="width: 100%;">
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Cargo/Subtítulo</span>
+                                <span id="bio-role-size-value" style="font-size: 0.7rem; color: #666;">100%</span>
+                            </div>
+                            <input type="range" id="bio-role-size" min="70" max="150" value="100" style="width: 100%;">
+                        </div>
+
+                        <div>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Bio/Descrição</span>
+                                <span id="bio-text-size-value" style="font-size: 0.7rem; color: #666;">100%</span>
+                            </div>
+                            <input type="range" id="bio-text-size" min="70" max="150" value="100" style="width: 100%;">
+                        </div>
+                    </div>
+
+                    <!-- LAYOUT -->
+                    <div class="control-group">
+                        <label>Ordem dos Blocos</label>
+                        <select id="bio-layout-order"
+                            style="width: 100%; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.05); color: white; border: 1px solid #333;">
+                            <option value="default">Padrão (Perfil > Ações > Banner > Links)</option>
+                            <option value="banner_top">Banner no Topo</option>
+                            <option value="banner_middle">Banner entre Perfil e Ações</option>
+                            <option value="links_first">Links Primeiro</option>
+                            <option value="minimal">Minimalista (Sem Ações)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label>Cor de Acento</label>
+                        <input type="color" id="bio-color-accent" value="#F59E0B" style="width: 100%; height: 40px;">
+                    </div>
+
+                    <!-- BANNER & BACKGROUND -->
+                    <div class="control-group">
+                        <label>Imagem de Fundo</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="bio-bg-image" accept="image/*">
+                            <span class="file-btn">Alterar Fundo</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group"
+                        style="padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-top: 10px;">
+                        <label>🖼️ Banner Destaque</label>
+                        <div
+                            style="font-size: 0.7rem; color: #f59e0b; margin-bottom: 8px; padding: 6px 8px; background: rgba(245, 158, 11, 0.1); border-radius: 6px; border-left: 3px solid #f59e0b;">
+                            📐 <strong>Dimensões recomendadas:</strong> 1200 x 400 pixels<br>
+                            <span style="color: #888;">Proporção 3:1 (horizontal)</span>
+                        </div>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="bio-banner-image" accept="image/*">
+                            <span class="file-btn">Upload Banner</span>
+                        </div>
+
+                        <!-- Banner Adjustments -->
+                        <div style="margin-top: 12px;" id="banner-adjust-controls">
+                            <div style="font-size: 0.7rem; color: #666; margin-bottom: 8px; font-style: italic;">
+                                💡 Ajuste a imagem caso seja maior que o espaço disponível
+                            </div>
+                            <label style="font-size: 0.8rem;">Zoom do Banner</label>
+                            <input type="range" id="bio-banner-zoom" min="100" max="250" value="100"
+                                style="width: 100%;">
+
+                            <label style="font-size: 0.8rem; margin-top: 8px; display: block;">Posição Vertical</label>
+                            <input type="range" id="bio-banner-y" min="0" max="100" value="50" style="width: 100%;">
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- BIO PREVIEW -->
+                <div class="canvas-area" style="background: #111;">
+                    <div class="iphone-mockup">
+                        <div class="iphone-screen">
+                            <div id="bio-preview-frame">
+                                <!-- Replicated Site Content Here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL: PUBLISH CONFIG -->
+        <div id="publish-modal" class="modal-overlay hidden"
+            style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; display:flex; justify-content:center; align-items:center;">
+            <div class="modal-content"
+                style="background:#1e293b; padding:30px; border-radius:16px; width:90%; max-width:450px; position:relative; color:white; border:1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+                <button onclick="closePublishModal()"
+                    style="position:absolute; top:15px; right:15px; background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">&times;</button>
+
+                <h3 style="margin-bottom:10px; font-size:1.5rem;">🚀 Publicar Site</h3>
+                <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:20px;">Seu site ficará online instantaneamente.
+                </p>
+
+                <div class="control-group" style="margin-bottom:25px;">
+                    <label style="display:block; margin-bottom:5px; font-weight:500;">Escolha o nome do seu
+                        link:</label>
+                    <div
+                        style="display:flex; align-items:center; background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.1); border-radius:8px; overflow:hidden;">
+                        <span
+                            style="padding:10px 15px; background:rgba(255,255,255,0.05); color:#94a3b8; font-size:0.9rem; border-right:1px solid rgba(255,255,255,0.1);">app.com/</span>
+                        <input type="text" id="site-slug" placeholder="seu-nome"
+                            style="flex:1; padding:10px; background:transparent; border:none; color:white; outline:none;">
+                    </div>
+                    <small style="color:#666; font-size:0.75rem; margin-top:5px; display:block;">Use apenas letras e
+                        traços.</small>
+                </div>
+
+                <button id="publish-action-btn" onclick="publishToPlatform()"
+                    style="width:100%; padding:12px; background:#2563eb; color:white; border:none; border-radius:8px; font-weight:bold; cursor:pointer; font-size:1rem; transition: background 0.2s;">
+                    ☁️ Publicar Agora
+                </button>
+
+                <div id="publish-status"
+                    style="margin-top:20px; font-size:0.9rem; text-align:center; padding:10px; border-radius:8px; display:none;">
+                </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <script src="data/niches.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
