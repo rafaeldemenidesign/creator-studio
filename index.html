@@ -14,6 +14,8 @@
         rel="stylesheet">
     <!-- html-to-image library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -24,7 +26,7 @@
             <div class="signup-container">
                 <div class="signup-card">
                     <div class="signup-header">
-                        <h1>👋 Bem-vindo ao Creator Studio</h1>
+                        <h1><i class="fa-solid fa-hand-spock"></i> Bem-vindo ao Creator Studio</h1>
                         <p>Crie sua conta para começar</p>
                     </div>
 
@@ -87,23 +89,23 @@
 
             <div class="mode-selection">
                 <button class="mode-card" onclick="startFlow('single')">
-                    <div class="mode-icon">🖼️</div>
+                    <div class="mode-icon"><i class="fa-regular fa-image"></i></div>
                     <h2>Criar Post Único</h2>
                     <p>Ideal para avisos, frases e promoções rápidas.</p>
                 </button>
                 <button class="mode-card" onclick="startFlow('carousel')">
-                    <div class="mode-icon">📚</div>
+                    <div class="mode-icon"><i class="fa-solid fa-layer-group"></i></div>
                     <h2>Criar Carrossel</h2>
                     <p>Conteúdo profundo em até 10 slides contínuos.</p>
                 </button>
                 <button class="mode-card" onclick="startFlow('week')">
-                    <div class="mode-icon">📆</div>
+                    <div class="mode-icon"><i class="fa-regular fa-calendar-days"></i></div>
                     <h2>Planejar Semana</h2>
                     <p>Gere 5 posts estratégicos (Seg-Sex) com um clique.</p>
                 </button>
                 <div class="divider-v"></div>
                 <button class="mode-card highlight" onclick="startBioFlow()">
-                    <div class="mode-icon">🔗</div>
+                    <div class="mode-icon"><i class="fa-solid fa-link"></i></div>
                     <h2>Link na Bio</h2>
                     <p>Crie um Mini-Site estilo App para sua biografia.</p>
                 </button>
@@ -139,9 +141,11 @@
 
                     <!-- TAB NAVIGATION -->
                     <div class="editor-tabs">
-                        <button id="tab-btn-content" class="tab-btn active" onclick="switchTab('content')">📝
+                        <button id="tab-btn-content" class="tab-btn active" onclick="switchTab('content')"><i
+                                class="fa-regular fa-pen-to-square"></i>
                             Conteúdo</button>
-                        <button id="tab-btn-design" class="tab-btn" onclick="switchTab('design')">🎨 Design</button>
+                        <button id="tab-btn-design" class="tab-btn" onclick="switchTab('design')"><i
+                                class="fa-solid fa-palette"></i> Design</button>
                     </div>
 
                     <!-- TAB: CONTENT (Default) -->
@@ -196,7 +200,7 @@
 
                         <!-- IMAGE CONTROLS -->
                         <div class="design-section">
-                            <h4>🖼️ Ajustes de Imagem</h4>
+                            <h4><i class="fa-regular fa-image"></i> Ajustes de Imagem</h4>
                             <div class="control-row">
                                 <label>Zoom</label>
                                 <input type="range" id="img-scale" min="1" max="3" step="0.1" value="1">
@@ -219,7 +223,7 @@
 
                         <!-- TYPOGRAPHY -->
                         <div class="design-section">
-                            <h4>🔤 Tipografia</h4>
+                            <h4><i class="fa-solid fa-font"></i> Tipografia</h4>
 
                             <div class="control-group-compact">
                                 <label>Fonte Principal</label>
@@ -270,7 +274,7 @@
                         <!-- COLORS -->
                         <div class="design-section">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <h4>🎨 Cores</h4>
+                                <h4><i class="fa-solid fa-palette"></i> Cores</h4>
                                 <label style="font-size: 0.8rem;"><input type="checkbox" id="use-custom-colors">
                                     Ativar</label>
                             </div>
@@ -303,7 +307,7 @@
 
                         <!-- LOGO -->
                         <div class="design-section">
-                            <h4>🏢 Sua Logo</h4>
+                            <h4><i class="fa-regular fa-building"></i> Sua Logo</h4>
                             <div class="file-input-wrapper small">
                                 <input type="file" id="input-logo" accept="image/png">
                                 <span class="file-btn" style="font-size: 0.8rem; padding: 4px 8px;">Upload PNG</span>
@@ -328,7 +332,7 @@
                     <!-- Feed Preview Toggle -->
                     <div class="feed-preview-container">
                         <div class="feed-header">
-                            <h3>📱 Preview do Feed</h3>
+                            <h3><i class="fa-solid fa-mobile-screen"></i> Preview do Feed</h3>
                             <p>Veja como fica no perfil</p>
                         </div>
                         <div id="feed-grid" class="feed-grid">
@@ -350,17 +354,20 @@
                     <h2>Criador de Link na Bio</h2>
                 </div>
                 <div class="header-right">
-                    <button id="publish-bio-btn" class="primary-btn" onclick="publishLinkInBio()"
-                        style="background:#24292e; display:flex; align-items:center; gap:8px;">
-                        🚀 Publicar
-                    </button>
+                    <button id="publish-bio-btn" class="primary-btn" onclick="publishLinkInBio()" <div
+                        class="header-right">
+                        <button id="publish-bio-btn" class="primary-btn" onclick="publishLinkInBio()"
+                            style="background:#24292e; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-rocket"></i> Publicar
+                        </button>
+                </div>
                 </div>
             </header>
 
             <div class="editor-container">
                 <!-- BIO CONTROLS -->
                 <aside class="controls-panel">
-                    <h3>👤 Perfil</h3>
+                    <h3><i class="fa-regular fa-user"></i> Perfil</h3>
                     <div class="control-group">
                         <label>Foto de Perfil</label>
                         <div class="file-input-wrapper">
@@ -380,11 +387,38 @@
                         <label>Bio (Curta)</label>
                         <textarea id="bio-text" rows="3"
                             placeholder="Ex: Ajudo você a escalar seu negócio..."></textarea>
+                        placeholder="Ex: Ajudo você a escalar seu negócio..."></textarea>
+                    </div>
+
+                    <div class="control-group">
+                        <label>WhatsApp (Opcional)</label>
+                        <input type="text" id="bio-whatsapp" placeholder="Ex: 5511999999999">
+                        <small style="font-size: 0.7rem; color: #888;">Para botão flutuante. Apenas números.</small>
                     </div>
 
                     <hr class="divider">
 
-                    <h3>🔗 Links Principais</h3>
+                    <h3>🎨 Cores e Estilo</h3>
+                    <div class="control-group">
+                        <label>Cor do Texto Principal</label>
+                        <input type="color" id="bio-color-text" value="#000000" style="width: 100%; height: 40px;">
+                    </div>
+                    <div class="control-group">
+                        <label>Cor do Subtítulo/Cargo</label>
+                        <input type="color" id="bio-color-role" value="#666666" style="width: 100%; height: 40px;">
+                    </div>
+                    <div class="control-group">
+                        <label>Cor de Destaque (Botões/Ícones)</label>
+                        <input type="color" id="bio-color-accent" value="#3b82f6" style="width: 100%; height: 40px;">
+                        <label
+                            style="font-size: 0.8rem; margin-top: 8px; display: flex; align-items: center; gap: 8px; color: #cbd5e1;">
+                            <input type="checkbox" id="bio-use-gradient"> Usar Gradiente no Destaque
+                        </label>
+                    </div>
+
+                    <hr class="divider">
+
+                    <h3><i class="fa-solid fa-link"></i> Links Principais</h3>
                     <div id="bio-links-list" class="bio-links-list">
                         <!-- Dynamic Links -->
                     </div>
@@ -396,12 +430,11 @@
                         + Adicionar Novo Link
                     </button>
 
-                    <button id="save-bio-btn" class="primary-btn w-full" style="background: #10B981; border: none;">💾
-                        Salvar Alterações</button>
+
 
                     <hr class="divider">
 
-                    <h3>🎨 Aparência e Layout</h3>
+                    <h3><i class="fa-solid fa-palette"></i> Aparência e Layout</h3>
 
                     <!-- FONTES -->
                     <div class="control-group">
@@ -431,7 +464,8 @@
                     <!-- TAMANHOS DE TEXTO -->
                     <div class="control-group"
                         style="background: rgba(255,255,255,0.02); padding: 12px; border-radius: 8px;">
-                        <label style="margin-bottom: 10px; display: block;">📐 Tamanhos de Texto</label>
+                        <label style="margin-bottom: 10px; display: block;"><i class="fa-solid fa-text-height"></i>
+                            Tamanhos de Texto</label>
 
                         <div style="margin-bottom: 10px;">
                             <div
@@ -474,10 +508,7 @@
                         </select>
                     </div>
 
-                    <div class="control-group">
-                        <label>Cor de Acento</label>
-                        <input type="color" id="bio-color-accent" value="#F59E0B" style="width: 100%; height: 40px;">
-                    </div>
+
 
                     <!-- BANNER & BACKGROUND -->
                     <div class="control-group">
@@ -490,7 +521,7 @@
 
                     <div class="control-group"
                         style="padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; margin-top: 10px;">
-                        <label>🖼️ Banner Destaque</label>
+                        <label><i class="fa-regular fa-image"></i> Banner Destaque</label>
                         <div
                             style="font-size: 0.7rem; color: #f59e0b; margin-bottom: 8px; padding: 6px 8px; background: rgba(245, 158, 11, 0.1); border-radius: 6px; border-left: 3px solid #f59e0b;">
                             📐 <strong>Dimensões recomendadas:</strong> 1200 x 400 pixels<br>
@@ -517,7 +548,7 @@
                 </aside>
 
                 <!-- BIO PREVIEW -->
-                <div class="canvas-area" style="background: #111;">
+                <div class="canvas-area">
                     <div class="iphone-mockup">
                         <div class="iphone-screen">
                             <div id="bio-preview-frame">
