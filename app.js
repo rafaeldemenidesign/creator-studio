@@ -42,6 +42,12 @@ let appState = {
             { id: 3, label: 'Instagram', url: '#', type: 'link' }
         ],
         accentColor: '#F59E0B',
+        useGradient: true, // New: Gradient toggle
+        colors: {
+            text: '#e2e8f0', // Light slate for dark mode bg
+            role: '#94a3b8'  // Muted slate
+        },
+        whatsapp: '', // New: WhatsApp number
         bgImage: null,
         // NEW: Font size controls
         fontSizes: {
@@ -643,7 +649,7 @@ function renderNicheGrid() {
 
     dom.nicheGrid.innerHTML = niches.map(niche => `
         <div class="niche-item" data-id="${niche.id}">
-            <div class="niche-icon">${niche.icon}</div>
+            <div class="niche-icon"><i class="${niche.icon}"></i></div>
             <div class="niche-name">${niche.title}</div>
         </div>
     `).join('');
@@ -1142,7 +1148,13 @@ const bioInputs = {
     banner: document.getElementById('bio-banner-image'),
     bannerZoom: document.getElementById('bio-banner-zoom'),
     bannerY: document.getElementById('bio-banner-y'),
-    saveBtn: document.getElementById('save-bio-btn'),
+    // Save button removed as per request
+    // NEW: Colors & WhatsApp
+    whatsapp: document.getElementById('bio-whatsapp'),
+    colorText: document.getElementById('bio-color-text'),
+    colorRole: document.getElementById('bio-color-role'),
+    colorAccent: document.getElementById('bio-color-accent'),
+    useGradient: document.getElementById('bio-use-gradient'),
     // NEW: Font size sliders
     nameSize: document.getElementById('bio-name-size'),
     roleSize: document.getElementById('bio-role-size'),
@@ -1159,6 +1171,13 @@ function startBioFlow() {
     // Setup Listeners for New Advanced Controls
     if (bioInputs.font) bioInputs.font.addEventListener('change', updateBioState);
     if (bioInputs.layout) bioInputs.layout.addEventListener('change', updateBioState);
+
+    // Listeners for New Features
+    if (bioInputs.whatsapp) bioInputs.whatsapp.addEventListener('input', updateBioState);
+    if (bioInputs.colorText) bioInputs.colorText.addEventListener('input', updateBioState);
+    if (bioInputs.colorRole) bioInputs.colorRole.addEventListener('input', updateBioState);
+    if (bioInputs.colorAccent) bioInputs.colorAccent.addEventListener('input', updateBioState);
+    if (bioInputs.useGradient) bioInputs.useGradient.addEventListener('change', updateBioState);
 
     // Standard Inputs
     if (bioInputs.banner) {
@@ -1187,21 +1206,7 @@ function startBioFlow() {
         });
     }
 
-    // Save Button Logic
-    if (bioInputs.saveBtn) {
-        bioInputs.saveBtn.onclick = () => {
-            const originalText = bioInputs.saveBtn.innerText;
-            bioInputs.saveBtn.innerText = "✅ Salvo!";
-            bioInputs.saveBtn.style.background = "#059669";
-            setTimeout(() => {
-                if (bioInputs.saveBtn) {
-                    bioInputs.saveBtn.innerText = originalText;
-                    bioInputs.saveBtn.style.background = "#10B981";
-                }
-            }, 2000);
-            showToast("Links e Alterações Salvas!");
-        };
-    }
+    // Save Button Logic REMOVED (Redundant)
 
     loadBioDefaults();
     renderBioPreview();
@@ -1222,6 +1227,12 @@ function loadBioDefaults() {
     // Use getElementById instead of broken reference
     const bioAccentInput = document.getElementById('bio-color-accent');
     if (bioAccentInput) bioAccentInput.value = appState.bio.accentColor;
+
+    // Load New Advanced Defaults
+    if (bioInputs.whatsapp) bioInputs.whatsapp.value = appState.bio.whatsapp || '';
+    if (bioInputs.colorText && appState.bio.colors) bioInputs.colorText.value = appState.bio.colors.text || '#e2e8f0';
+    if (bioInputs.colorRole && appState.bio.colors) bioInputs.colorRole.value = appState.bio.colors.role || '#94a3b8';
+    if (bioInputs.useGradient) bioInputs.useGradient.checked = appState.bio.useGradient !== false; // Default true is cleaner
 
     // Load advanced defaults
     if (bioInputs.font) bioInputs.font.value = appState.bio.font || "'Montserrat', sans-serif";
@@ -1355,6 +1366,12 @@ function updateBioState() {
     const accentInput = document.getElementById('bio-color-accent');
     appState.bio.accentColor = accentInput ? accentInput.value : '#F59E0B';
 
+    // New Colors & Toggles
+    if (bioInputs.colorText) appState.bio.colors.text = bioInputs.colorText.value;
+    if (bioInputs.colorRole) appState.bio.colors.role = bioInputs.colorRole.value;
+    if (bioInputs.useGradient) appState.bio.useGradient = bioInputs.useGradient.checked;
+    if (bioInputs.whatsapp) appState.bio.whatsapp = bioInputs.whatsapp.value.replace(/[^0-9]/g, '');
+
     const fontInput = document.getElementById('bio-font');
     appState.bio.font = fontInput ? fontInput.value : "'Montserrat', sans-serif";
 
@@ -1404,7 +1421,12 @@ function renderBioPreview() {
     const bio = appState.bio;
     const accent = bio.accentColor;
     const font = bio.font || "'Montserrat', sans-serif";
-    const layout = bio.layout || "default";
+    const layout = bio.layout || "default"; // Fixed missing declaration
+
+    // New Colors
+    const colorText = bio.colors?.text || '#ffffff'; // Default white for dark mode
+    const colorRole = bio.colors?.role || accent;
+    const useGradient = bio.useGradient !== false; // Default true
 
     // Extract font family name for inline style
     const fontFamily = font.split(',')[0].replace(/'/g, "");
@@ -1413,12 +1435,6 @@ function renderBioPreview() {
     const bannerUrl = bio.banner || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&q=80';
     const zoom = bio.bannerSettings?.zoom || 100;
     const posY = bio.bannerSettings?.y || 50;
-
-    const bannerStyle = `
-        background-image: url('${bannerUrl}'); 
-        background-size: ${zoom}%; 
-        background-position: center ${posY}%;
-    `;
 
     // Apply Font to Frame wrapper
     if (dom.bioPreviewFrame) {
@@ -1430,41 +1446,47 @@ function renderBioPreview() {
     const roleSizeFactor = (bio.fontSizes?.role || 100) / 100;
     const textSizeFactor = (bio.fontSizes?.text || 100) / 100;
 
-    // Banner Logic with Zoom/Position
+    // Banner Logic
     let bannerHTML = '';
     if (bio.banner) {
-        const zoom = bio.bannerSettings?.zoom || 100;
-        const posY = bio.bannerSettings?.y || 50;
         bannerHTML = `<div style="width:100%; height:140px; background: url('${bio.banner}'); background-size: ${zoom}%; background-position: center ${posY}%; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08);"></div>`;
     }
 
-    // --- HTML BLOCKS - MODERNIZED ---
+    // Gradient Logic
+    const gradientBg = useGradient
+        ? `background: linear-gradient(135deg, ${accent}, #a855f7);`
+        : `background: ${accent};`;
+
+    const gradientText = useGradient
+        ? `background: linear-gradient(135deg, ${accent}, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;`
+        : `color: ${accent};`;
+
+    // --- HTML BLOCKS ---
     const profileBlock = `
             <div style="display:flex; flex-direction:column; align-items:center; width:100%; margin-bottom: 16px;">
                 <div style="position: relative; margin-bottom: 16px;">
-                    <div style="position: absolute; inset: -8px; background: linear-gradient(135deg, ${accent}, #a855f7, #ec4899); border-radius: 50%; filter: blur(15px); opacity: 0.5;"></div>
-                    <div style="position: absolute; inset: -4px; background: linear-gradient(135deg, ${accent}, #a855f7); border-radius: 50%; opacity: 0.7;"></div>
+                    ${useGradient ? `<div style="position: absolute; inset: -4px; background: linear-gradient(135deg, ${accent}, #a855f7); border-radius: 50%; opacity: 0.7;"></div>` : ''}
                     <img src="${bio.avatar}" style="position: relative; width: 100px; height: 100px; border-radius: 50%; border: 4px solid #0f172a; object-fit: cover; box-shadow: 0 8px 30px rgba(0,0,0,0.5);">
                 </div>
 
-                <h1 style="font-size: calc(1.4rem * ${nameSizeFactor}); font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">${bio.name}</h1>
-                <p style="font-size: calc(0.65rem * ${roleSizeFactor}); color: ${accent}; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px;">${bio.role}</p>
-                <p style="font-size: calc(0.8rem * ${textSizeFactor}); color: #94a3b8; text-align: center; line-height: 1.6; max-width: 90%; font-weight: 400;">${bio.text}</p>
+                <h1 style="font-size: calc(1.4rem * ${nameSizeFactor}); font-weight: 700; margin-bottom: 4px; letter-spacing: -0.5px; color: ${colorText}; text-shadow: 0 2px 10px rgba(0,0,0,0.3); line-height: 1.2; text-align: center;">${bio.name}</h1>
+                <p style="font-size: calc(0.65rem * ${roleSizeFactor}); color: ${colorRole}; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; text-align: center;">${bio.role}</p>
+                <p style="font-size: calc(0.8rem * ${textSizeFactor}); color: ${colorText}; opacity: 0.8; text-align: center; line-height: 1.6; max-width: 90%; font-weight: 400;">${bio.text}</p>
             </div>`;
 
     const actionsBlock = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-bottom: 12px;">
                  <div style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 16px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor: pointer;">
-                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, ${accent}30, ${accent}10); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-solid fa-location-dot" style="color:${accent}; font-size: 0.9rem;"></i>
+                    <div style="width: 36px; height: 36px; ${gradientBg} border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-location-dot" style="color:white; font-size: 0.9rem;"></i>
                     </div>
-                    <span style="font-size:0.7rem; color:#cbd5e1; font-weight: 500;">Localização</span>
+                    <span style="font-size:0.7rem; color:${colorText}; opacity:0.7; font-weight: 500;">Localização</span>
                  </div>
                  <div style="background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.06); padding: 14px; border-radius: 16px; display:flex; flex-direction:column; align-items:center; gap:8px; cursor: pointer;">
-                    <div style="width: 36px; height: 36px; background: linear-gradient(135deg, ${accent}30, ${accent}10); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-regular fa-address-card" style="color:${accent}; font-size: 0.9rem;"></i>
+                    <div style="width: 36px; height: 36px; ${gradientBg} border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-regular fa-address-card" style="color:white; font-size: 0.9rem;"></i>
                     </div>
-                    <span style="font-size:0.7rem; color:#cbd5e1; font-weight: 500;">Salvar Contato</span>
+                    <span style="font-size:0.7rem; color:${colorText}; opacity:0.7; font-weight: 500;">Salvar Contato</span>
                  </div>
             </div>`;
 
@@ -1476,7 +1498,7 @@ function renderBioPreview() {
         let iconClass = 'fa-solid fa-link';
         const l = link.label.toLowerCase();
         if (l.includes('instagram')) iconClass = 'fa-brands fa-instagram';
-        if (l.includes('whatsapp')) iconClass = 'fa-brands fa-whatsapp';
+        if (l.includes('whatsapp') || l.includes('fale comigo')) iconClass = 'fa-brands fa-whatsapp';
         if (l.includes('youtube')) iconClass = 'fa-brands fa-youtube';
         if (l.includes('tiktok')) iconClass = 'fa-brands fa-tiktok';
         if (l.includes('site') || l.includes('web')) iconClass = 'fa-solid fa-globe';
@@ -1492,14 +1514,15 @@ function renderBioPreview() {
                         display: flex;
                         align-items: center;
                         gap: 14px;
-                        color: white;
+                        color: ${colorText};
                         cursor: pointer;
-                    ">
+                        transition: transform 0.2s;
+                    " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
                         <div style="width: 38px; height: 38px; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.03)); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                            <i class="${iconClass}" style="font-size: 0.9rem; color: #cbd5e1;"></i>
+                            <i class="${iconClass}" style="font-size: 1rem; color: ${accent};"></i>
                         </div>
-                        <span style="font-weight: 500; font-size: 0.85rem; flex: 1; color: #e2e8f0;">${link.label}</span>
-                        <i class="fa-solid fa-arrow-right" style="font-size: 0.65rem; color: #64748b;"></i>
+                        <span style="font-weight: 500; font-size: 0.85rem; flex: 1;">${link.label}</span>
+                        <i class="fa-solid fa-arrow-right" style="font-size: 0.65rem; opacity: 0.5;"></i>
                     </div>
                 `}).join('')}
             </div>`;
@@ -1512,8 +1535,17 @@ function renderBioPreview() {
     else if (layout === 'minimal') mainContent = profileBlock + bannerHTML + linksBlock;
     else mainContent = profileBlock + actionsBlock + separator + bannerHTML + linksBlock;
 
+    // --- FLOATING WHATSAPP ---
+    let waFloatHTML = '';
+    if (bio.whatsapp && bio.whatsapp.length > 8) {
+        waFloatHTML = `
+        <div class="bio-whatsapp-float">
+            <i class="fa-brands fa-whatsapp"></i>
+        </div>`;
+    }
+
     const html = `
-    <div style="width:100%; min-height:100%; font-family: ${font}; background: radial-gradient(ellipse 80% 50% at 50% -20%, ${accent}12, transparent), radial-gradient(ellipse 60% 40% at 100% 100%, #7c3aed18, transparent), #0f172a; color: white; display: flex; flex-direction: column; align-items: center; padding: 0; box-sizing: border-box; position: relative; overflow-x: hidden;">
+    <div style="width:100%; min-height:100%; font-family: ${font}; background: radial-gradient(ellipse 80% 50% at 50% -20%, ${accent}12, transparent), radial-gradient(ellipse 60% 40% at 100% 100%, #7c3aed18, transparent), #0f172a; color: ${colorText}; display: flex; flex-direction: column; align-items: center; padding: 0; box-sizing: border-box; position: relative; overflow-x: hidden;">
         ${bio.bgImage ? `<div style="position: absolute; top:0; left:0; width:100%; height:100%; background: url('${bio.bgImage}') center/cover; opacity: 0.12; z-index: 0;"></div>` : ''}
         
         <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.6), #0f172a); z-index: 1;"></div>
@@ -1522,16 +1554,10 @@ function renderBioPreview() {
             ${mainContent}
 
             <!-- SOCIAL FOOTER -->
-            <div style="display: flex; gap: 14px; margin-top: 24px;">
-                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-brands fa-instagram" style="font-size: 0.9rem; color: #64748b;"></i>
-                </div>
-                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-brands fa-whatsapp" style="font-size: 0.9rem; color: #64748b;"></i>
-                </div>
-                <div style="width: 36px; height: 36px; background: rgba(255,255,255,0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-brands fa-linkedin" style="font-size: 0.9rem; color: #64748b;"></i>
-                </div>
+            <div style="display: flex; gap: 14px; margin-top: 24px; opacity: 0.5;">
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-whatsapp"></i>
+                <i class="fa-brands fa-linkedin"></i>
             </div>
 
             <div style="font-size: 9px; margin-top: 4px; opacity: 0.25; letter-spacing: 2px; text-transform: uppercase;">
@@ -1539,10 +1565,7 @@ function renderBioPreview() {
             </div>
         </div>
 
-        <!-- FLOATING BTN -->
-        <div style="position: absolute; bottom: 16px; right: 16px; width: 46px; height: 46px; background: #25D366; border-radius: 50%; box-shadow: 0 4px 20px rgba(37, 211, 102, 0.5), 0 0 20px rgba(37, 211, 102, 0.3); display:flex; align-items:center; justify-content:center; z-index:20;">
-            <i class="fa-brands fa-whatsapp" style="color: white; font-size: 1.3rem;"></i>
-        </div>
+        ${waFloatHTML}
     </div>
     `;
 
