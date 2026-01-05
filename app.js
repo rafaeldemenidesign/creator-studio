@@ -1177,20 +1177,8 @@ function handleBioBgUpload(e) {
     }
 }
 
-function handleBioBannerUpload(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-            appState.bio.banner = evt.target.result;
-            // Activate controls
-            const controls = document.getElementById('banner-adjust-controls');
-            if (controls) controls.style.display = 'block';
-            renderBioPreview();
-        };
-        reader.readAsDataURL(file);
-    }
-}
+// Removed duplicate handleBioBannerUpload
+// Key logic moved to the single definition below
 
 function renderBioLinksList() {
     dom.bioLinksList.innerHTML = '';
@@ -1277,10 +1265,12 @@ function updateBioState() {
 
     // Banner Config
     const zoomInput = document.getElementById('bio-banner-zoom');
-    appState.bio.bannerZoom = zoomInput ? zoomInput.value : 100;
-
     const yInput = document.getElementById('bio-banner-y');
-    appState.bio.bannerY = yInput ? yInput.value : 50;
+
+    appState.bio.bannerSettings = {
+        zoom: zoomInput ? zoomInput.value : 100,
+        y: yInput ? yInput.value : 50
+    };
 
     renderBioPreview();
 }
@@ -1289,8 +1279,8 @@ function handleBioBannerUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (e) => {
-        appState.bio.bannerImage = e.target.result;
+    reader.onload = (evt) => {
+        appState.bio.banner = evt.target.result; // Standardized to .banner
 
         // Show controls
         const controls = document.getElementById('banner-adjust-controls');
@@ -1311,9 +1301,9 @@ function renderBioPreview() {
     const fontFamily = font.split(',')[0].replace(/'/g, "");
 
     // Prepare Banner Style
-    const bannerUrl = bio.bannerImage || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&q=80';
-    const zoom = bio.bannerZoom || 100;
-    const posY = bio.bannerY || 50;
+    const bannerUrl = bio.banner || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&q=80';
+    const zoom = bio.bannerSettings?.zoom || 100;
+    const posY = bio.bannerSettings?.y || 50;
 
     const bannerStyle = `
         background-image: url('${bannerUrl}'); 
@@ -1617,6 +1607,17 @@ function generateBioHTML() {
             a.href = url;
             a.download = 'contato.vcf';
             a.click();
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
         }
     </script>
     <style>
