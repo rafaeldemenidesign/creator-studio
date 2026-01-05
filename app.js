@@ -1370,6 +1370,17 @@ function updateBioState() {
         y: yInput ? yInput.value : 50
     };
 
+    // NEW: Font Sizes
+    const nameSize = document.getElementById('bio-name-size');
+    const roleSize = document.getElementById('bio-role-size');
+    const textSize = document.getElementById('bio-text-size');
+
+    appState.bio.fontSizes = {
+        name: nameSize ? nameSize.value : 100,
+        role: roleSize ? roleSize.value : 100,
+        text: textSize ? textSize.value : 100
+    };
+
     renderBioPreview();
 }
 
