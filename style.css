@@ -226,6 +226,14 @@ textarea:focus,
 select:focus {
     outline: 2px solid var(--primary-color);
     background: white;
+    color: black;
+}
+
+/* Fix for Select Options Visibility */
+select option {
+    background: #1F2937;
+    /* Dark gray for contrast */
+    color: white;
 }
 
 /* Brand Section */
