@@ -707,33 +707,35 @@ input[type=range]::-webkit-slider-runnable-track {
     flex-shrink: 0;
 }
 
-/* iPhone Mockup */
+/* iPhone Mockup Modern */
 .iphone-mockup {
-    width: 375px;
-    height: 812px;
+    width: 390px;
+    height: 844px;
+    /* Mais alongado */
     background: #000;
-    border-radius: 40px;
-    border: 12px solid #222;
+    border-radius: 48px;
+    border: 6px solid #1f1f1f;
+    /* Borda mais fina e grafite escuro */
     position: relative;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
     overflow: hidden;
     transform: scale(0.85);
-    /* Default scale to fit */
     transform-origin: top center;
+    margin-bottom: -100px;
+    /* Compensate scale gap */
 }
 
-/* Dynamic Dynamic Island/Notch simulation */
+/* Dynamic Island */
 .iphone-mockup::before {
     content: '';
     position: absolute;
-    top: 0;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 150px;
-    height: 30px;
-    background: #222;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    width: 120px;
+    height: 35px;
+    background: #000;
+    border-radius: 20px;
     z-index: 1000;
 }
 
@@ -1258,3 +1260,6 @@ input[type=range]::-webkit-slider-runnable-track {
 .w-full {
     width: 100%;
 }
+/* Input Contrast Fix */
+.controls-panel input[type='text'], .controls-panel textarea { background: #fff !important; color: #333 !important; border: 1px solid #ddd; }
+.bio-whatsapp-float { position: absolute; bottom: 20px; right: 20px; width: 50px; height: 50px; background: #25D366; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; z-index: 50; color: white; font-size: 24px; }
