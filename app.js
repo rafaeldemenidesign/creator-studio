@@ -1220,6 +1220,21 @@ window.removeBioLink = function (index) {
     renderBioPreview();
 }
 
+// --- BIO COMPONENT LOGIC ---
+
+function updateBioState() {
+    appState.bio.name = inputs.bioName.value;
+    appState.bio.role = inputs.bioRole.value;
+    appState.bio.text = inputs.bioText.value;
+    appState.bio.accentColor = inputs.bioAccent ? inputs.bioAccent.value : '#F59E0B';
+
+    // Banner Config
+    // appState.bio.bannerZoom = inputs.bioBannerZoom.value;
+    // appState.bio.bannerY = inputs.bioBannerY.value;
+
+    renderBioPreview();
+}
+
 function renderBioPreview() {
     const bio = appState.bio;
     const accent = bio.accentColor;
