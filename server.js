@@ -33,45 +33,25 @@ if (GITHUB_TOKEN) {
     console.log("⚠️ GitHub Token missing. Saving locally only.");
 }
 
-// Publish Endpoint
+// Publish Endpoint - Updated to use username folders
 app.post('/api/publish', async (req, res) => {
-    const { slug, content } = req.body;
+    const { username, content } = req.body;
 
-    if (!slug || !content) {
+    if (!username || !content) {
         return res.status(400).json({ error: 'Dados incompletos.' });
     }
 
-    const safeSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
-    const fileName = `${safeSlug}.html`;
+    const safeUsername = username.replace(/[^a-z0-9_]/gi, '').toLowerCase();
 
     // 1. Save Locally (Backup/Dev)
-    const filePath = path.join(sitesDir, fileName);
-    fs.writeFileSync(filePath, content);
+    const userDir = path.join(sitesDir, safeUsername);
+    if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
+    fs.writeFileSync(path.join(userDir, 'index.html'), content);
 
     // 2. Push to GitHub (Production Persistence)
     if (octokit && GITHUB_OWNER && GITHUB_REPO) {
         try {
-            console.log(`Pushing ${fileName} to GitHub...`);
-
-            // Check if repo exists, create if not
-            try {
-                await octokit.request('GET /repos/{owner}/{repo}', {
-                    owner: GITHUB_OWNER,
-                    repo: GITHUB_REPO
-                });
-            } catch (e) {
-                if (e.status === 404) {
-                    console.log(`Repo ${GITHUB_REPO} not found. Creating...`);
-                    await octokit.request('POST /user/repos', {
-                        name: GITHUB_REPO,
-                        description: 'Sites do Bio Link Creator',
-                        auto_init: true,
-                        private: false
-                    });
-                    // Wait for init
-                    await new Promise(r => setTimeout(r, 3000));
-                } else { throw e; }
-            }
+            console.log(`Publishing ${safeUsername}/index.html to GitHub...`);
 
             // Check if file exists to get SHA
             let sha = null;
@@ -79,40 +59,101 @@ app.post('/api/publish', async (req, res) => {
                 const { data } = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
                     owner: GITHUB_OWNER,
                     repo: GITHUB_REPO,
-                    path: `sites/${fileName}`,
+                    path: `${safeUsername}/index.html`,
                 });
                 sha = data.sha;
-            } catch (e) { /* File doesn't exist yet, ignore */ }
+            } catch (e) { /* File doesn't exist yet */ }
 
             const contentBase64 = Buffer.from(content).toString('base64');
 
             await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
                 owner: GITHUB_OWNER,
                 repo: GITHUB_REPO,
-                path: `sites/${fileName}`,
-                message: `Update site: ${safeSlug}`,
+                path: `${safeUsername}/index.html`,
+                message: `Publish bio: @${safeUsername}`,
                 content: contentBase64,
                 sha: sha
             });
 
-            // Return GitHub Pages URL
-            // Ensure Pages is enabled? (Hard to do via API perfectly, assuming user enables or default public)
-            // Actually, we can assume user.github.io/repo/sites/file.html works if Docs/Main is source.
-            // For now, return the raw file link or pages link.
-            const ghUrl = `https://${GITHUB_OWNER}.github.io/${GITHUB_REPO}/sites/${fileName}?v=${Date.now()}`;
+            // 3. Ensure GitHub Pages is Enabled
+            try {
+                await octokit.request('GET /repos/{owner}/{repo}/pages', {
+                    owner: GITHUB_OWNER,
+                    repo: GITHUB_REPO
+                });
+                console.log("✅ GitHub Pages já ativo.");
+            } catch (e) {
+                if (e.status === 404) {
+                    console.log("⚙️ Ativando GitHub Pages...");
+                    try {
+                        await octokit.request('POST /repos/{owner}/{repo}/pages', {
+                            owner: GITHUB_OWNER,
+                            repo: GITHUB_REPO,
+                            source: {
+                                branch: 'main',
+                                path: '/'
+                            }
+                        });
+                        console.log("✅ GitHub Pages ativado com sucesso!");
+                    } catch (err) {
+                        console.error("⚠️ Falha ao ativar Pages automaticamente:", err.message);
+                    }
+                }
+            }
+
+            const ghUrl = `https://${GITHUB_OWNER}.github.io/${GITHUB_REPO}/${safeUsername}/?v=${Date.now()}`;
             return res.json({ success: true, url: ghUrl, mode: 'github' });
 
         } catch (error) {
             console.error("GitHub upload failed:", error);
-            // Fallback to local URL on error, allowing user to see it works at least locally
-            const localUrl = `http://localhost:${PORT}/sites/${fileName}`;
+            const localUrl = `http://localhost:${PORT}/sites/${safeUsername}/index.html`;
             return res.json({ success: true, url: localUrl, warning: 'GitHub push failed', mode: 'local' });
         }
     }
 
-    // Local Only Response
-    const localUrl = `http://localhost:${PORT}/sites/${fileName}`;
+    const localUrl = `http://localhost:${PORT}/sites/${safeUsername}/index.html`;
     res.json({ success: true, url: localUrl, mode: 'local' });
+});
+
+// Check Username Availability
+app.get('/api/check-username/:username', async (req, res) => {
+    const username = req.params.username.toLowerCase().replace(/[^a-z0-9_]/g, '');
+
+    if (!username || username.length < 3) {
+        return res.json({ available: false, reason: 'Mínimo 3 caracteres' });
+    }
+
+    // Reserved usernames
+    const reserved = ['admin', 'api', 'www', 'app', 'null', 'undefined', 'system'];
+    if (reserved.includes(username)) {
+        return res.json({ available: false, reason: 'Username reservado' });
+    }
+
+    // Check if exists on GitHub
+    if (octokit && GITHUB_OWNER && GITHUB_REPO) {
+        try {
+            await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+                owner: GITHUB_OWNER,
+                repo: GITHUB_REPO,
+                path: `${username}/index.html`,
+            });
+            // If we get here, file exists = username taken
+            return res.json({ available: false, reason: 'Já está em uso' });
+        } catch (e) {
+            if (e.status === 404) {
+                return res.json({ available: true });
+            }
+            console.error("GitHub check error:", e);
+        }
+    }
+
+    // Local check fallback
+    const localPath = path.join(sitesDir, username, 'index.html');
+    if (fs.existsSync(localPath)) {
+        return res.json({ available: false, reason: 'Já está em uso' });
+    }
+
+    return res.json({ available: true });
 });
 
 app.listen(PORT, () => {
