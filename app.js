@@ -464,6 +464,25 @@ function setupEditorListeners() {
     if (inputs.bioAvatar) inputs.bioAvatar.addEventListener('change', handleBioAvatarUpload);
     if (inputs.bioBg) inputs.bioBg.addEventListener('change', handleBioBgUpload);
 
+    // NEW LISTENERS (Refinement)
+    const bioBannerInput = document.getElementById('bio-banner-image');
+    if (bioBannerInput) bioBannerInput.addEventListener('change', handleBioBannerUpload);
+
+    const bioFontInput = document.getElementById('bio-font');
+    if (bioFontInput) bioFontInput.addEventListener('change', updateBioState);
+
+    const bioLayoutOrder = document.getElementById('bio-layout-order');
+    if (bioLayoutOrder) bioLayoutOrder.addEventListener('change', updateBioState);
+
+    const bioBannerZoom = document.getElementById('bio-banner-zoom');
+    if (bioBannerZoom) bioBannerZoom.addEventListener('input', updateBioState);
+
+    const bioBannerY = document.getElementById('bio-banner-y');
+    if (bioBannerY) bioBannerY.addEventListener('input', updateBioState);
+
+    const bioColorAccent = document.getElementById('bio-color-accent');
+    if (bioColorAccent) bioColorAccent.addEventListener('input', updateBioState);
+
 
     // Carousel/Week Nav
     const prev = document.getElementById('prev-slide');
@@ -1223,16 +1242,45 @@ window.removeBioLink = function (index) {
 // --- BIO COMPONENT LOGIC ---
 
 function updateBioState() {
+    // Basic Info
     appState.bio.name = inputs.bioName.value;
     appState.bio.role = inputs.bioRole.value;
     appState.bio.text = inputs.bioText.value;
-    appState.bio.accentColor = inputs.bioAccent ? inputs.bioAccent.value : '#F59E0B';
+
+    // Design & Layout
+    const accentInput = document.getElementById('bio-color-accent');
+    appState.bio.accentColor = accentInput ? accentInput.value : '#F59E0B';
+
+    const fontInput = document.getElementById('bio-font');
+    appState.bio.font = fontInput ? fontInput.value : "'Montserrat', sans-serif";
+
+    const layoutInput = document.getElementById('bio-layout-order');
+    appState.bio.layout = layoutInput ? layoutInput.value : 'default';
 
     // Banner Config
-    // appState.bio.bannerZoom = inputs.bioBannerZoom.value;
-    // appState.bio.bannerY = inputs.bioBannerY.value;
+    const zoomInput = document.getElementById('bio-banner-zoom');
+    appState.bio.bannerZoom = zoomInput ? zoomInput.value : 100;
+
+    const yInput = document.getElementById('bio-banner-y');
+    appState.bio.bannerY = yInput ? yInput.value : 50;
 
     renderBioPreview();
+}
+
+function handleBioBannerUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        appState.bio.bannerImage = e.target.result;
+
+        // Show controls
+        const controls = document.getElementById('banner-adjust-controls');
+        if (controls) controls.style.display = 'block';
+
+        renderBioPreview();
+    };
+    reader.readAsDataURL(file);
 }
 
 function renderBioPreview() {
@@ -1240,6 +1288,25 @@ function renderBioPreview() {
     const accent = bio.accentColor;
     const font = bio.font || "'Montserrat', sans-serif";
     const layout = bio.layout || "default";
+
+    // Extract font family name for inline style
+    const fontFamily = font.split(',')[0].replace(/'/g, "");
+
+    // Prepare Banner Style
+    const bannerUrl = bio.bannerImage || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=800&q=80';
+    const zoom = bio.bannerZoom || 100;
+    const posY = bio.bannerY || 50;
+
+    const bannerStyle = `
+        background-image: url('${bannerUrl}'); 
+        background-size: ${zoom}%; 
+        background-position: center ${posY}%;
+    `;
+
+    // Apply Font to Frame wrapper
+    if (dom.bioPreviewFrame) {
+        dom.bioPreviewFrame.style.fontFamily = fontFamily;
+    }
 
     // Font size calculations
     const nameSizeFactor = (bio.fontSizes?.name || 100) / 100;
