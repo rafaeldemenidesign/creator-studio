@@ -292,7 +292,7 @@ function startBioFlow() {
     inputs.bioRole.value = appState.bio.role;
     inputs.bioText.value = appState.bio.text;
 
-    renderLinks();
+    renderBioLinksList();
     renderBioPreview();
 }
 
