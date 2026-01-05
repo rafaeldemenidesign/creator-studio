@@ -988,3 +988,19 @@ input[type=range]::-webkit-slider-runnable-track {
 .icon-btn:hover {
     opacity: 1;
 }
+
+/* Custom Select Input */
+.bio-select-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    /* Applies to collapsed state */
+    border: 1px solid #333;
+}
+
+.bio-select-input option {
+    background-color: #1f2937;
+    color: white;
+}
