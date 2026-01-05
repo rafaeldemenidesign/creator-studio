@@ -48,15 +48,18 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="signup-username">Username</label>
-                            <div class="username-input-wrapper">
-                                <span class="username-prefix">@</span>
-                                <input type="text" id="signup-username" placeholder="seu_usuario" pattern="[a-z0-9_]+"
-                                    required>
-                            </div>
-                            <span id="username-status" class="username-status"></span>
-                            <small class="username-rules">Apenas letras minúsculas, números e underscore (_). Mínimo 3
-                                caracteres.</small>
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" placeholder="seu@email.com" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-password">Senha</label>
+                            <input type="password" id="signup-password" placeholder="Mínimo 6 caracteres" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signup-cpf">CPF (Para Certificado)</label>
+                            <input type="text" id="signup-cpf" placeholder="000.000.000-00">
                         </div>
 
                         <button type="submit" id="signup-btn" class="primary-btn full-width" disabled>Criar
