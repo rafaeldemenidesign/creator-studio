@@ -317,6 +317,65 @@ function hideAllViews() {
 // ... (Rest of existing functions: renderNiches, selectNiche, etc.)
 // ... (Including the updated generateBioHTML and renderBioPreview logic from previous steps)
 
+// Function to Publish Bio
+async function publishLinkInBio() {
+    if (!appState.user) return alert('Erro: Usuário não logado.');
+
+    const btn = document.getElementById('publish-bio-btn');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Publicando...';
+    btn.disabled = true;
+
+    try {
+        const htmlContent = generateBioHTML();
+
+        const response = await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: appState.user.username,
+                content: htmlContent
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            showPublishSuccess(data.url);
+        } else {
+            alert('Erro ao publicar: ' + (data.error || 'Erro desconhecido'));
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Erro de conexão ao publicar.');
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    }
+}
+
+function showPublishSuccess(url) {
+    const modalHtml = `
+    <div style="position:fixed; inset:0; background:rgba(0,0,0,0.8); display:flex; align-items:center; justify-content:center; z-index:9999;">
+        <div style="background:white; padding:30px; border-radius:16px; max-width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.5);">
+            <div style="font-size:50px; margin-bottom:10px;">🚀</div>
+            <h2 style="color:#111827; margin-bottom:10px; font-weight:800;">Site Publicado!</h2>
+            <p style="color:#6B7280; margin-bottom:20px;">Seu Link na Bio está online e pronto para usar.</p>
+            
+            <div style="background:#F3F4F6; padding:12px; border-radius:8px; margin-bottom:20px; font-family:monospace; word-break:break-all; border:1px solid #E5E7EB; color:#4F46E5;">
+                <a href="${url}" target="_blank" style="text-decoration:none; color:inherit;">${url}</a>
+            </div>
+
+            <div style="display:flex; gap:10px; justify-content:center;">
+                <a href="${url}" target="_blank" class="primary-btn" style="text-decoration:none;">Abrir Site</a>
+                <button onclick="this.parentElement.parentElement.parentElement.remove()" style="padding:10px 20px; border:1px solid #E5E7EB; background:white; border-radius:8px; cursor:pointer;">Fechar</button>
+            </div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
 function setupEventListeners() {
     // Mode Selection is inline onclick
 
