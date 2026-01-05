@@ -1197,7 +1197,7 @@ function renderBioLinksList() {
     appState.bio.links.forEach((link, index) => {
         const el = document.createElement('div');
         el.className = 'bio-link-item';
-        // Auto-detect icon based on label for better UX
+
         let iconPlaceholder = 'fa-link';
         const lower = link.label.toLowerCase();
         if (lower.includes('instagram')) iconPlaceholder = 'fa-instagram';
@@ -1205,18 +1205,36 @@ function renderBioLinksList() {
         if (lower.includes('youtube')) iconPlaceholder = 'fa-youtube';
         if (lower.includes('linkedin')) iconPlaceholder = 'fa-linkedin';
         if (lower.includes('site') || lower.includes('web')) iconPlaceholder = 'fa-globe';
+        if (lower.includes('tiktok')) iconPlaceholder = 'fa-tiktok';
 
         el.innerHTML = `
             <div style="flex:1; display:flex; flex-direction:column; gap:4px;">
-                <input type="text" value="${link.label}" placeholder="Título" oninput="updateBioLink(${index}, 'label', this.value)">
-                <input type="text" value="${link.url}" placeholder="URL" oninput="updateBioLink(${index}, 'url', this.value)" style="font-size:0.8rem; color:#666;">
+                <input type="text" class="link-label-input" data-index="${index}" value="${link.label}" placeholder="Título (ex: Instagram)">
+                <input type="text" class="link-url-input" data-index="${index}" value="${link.url}" placeholder="https://..." style="font-size:0.8rem; color:#666;">
             </div>
             <div style="display:flex; align-items:center; color:#666; font-size:1.2rem; margin-right:10px;">
-                <i class="fa-solid ${iconPlaceholder}"></i>
+                <i class="fa-brands ${iconPlaceholder}" style="font-family: 'Font Awesome 6 Brands', 'Font Awesome 6 Free';"></i>
             </div>
             <button class="bio-link-remove" onclick="removeBioLink(${index})">×</button>
         `;
         dom.bioLinksList.appendChild(el);
+    });
+
+    // Attach Listeners properly
+    document.querySelectorAll('.link-label-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            const idx = e.target.getAttribute('data-index');
+            appState.bio.links[idx].label = e.target.value;
+            renderBioPreview(); // Live Update
+        });
+    });
+
+    document.querySelectorAll('.link-url-input').forEach(input => {
+        input.addEventListener('input', (e) => {
+            const idx = e.target.getAttribute('data-index');
+            appState.bio.links[idx].url = e.target.value;
+            renderBioPreview(); // Live Update
+        });
     });
 }
 
@@ -1429,7 +1447,15 @@ function renderBioPreview() {
     </div>
     `;
 
-    dom.bioPreviewFrame.innerHTML = html;
+    // Live Indicator
+    const indicator = `
+        <div style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); border-radius:20px; padding:4px 10px; display:flex; align-items:center; gap:6px; z-index:100; pointer-events:none;">
+            <div style="width:6px; height:6px; background:#22c55e; border-radius:50%; box-shadow:0 0 8px #22c55e;"></div>
+            <span style="font-size:0.6rem; color:white; font-weight:600; text-transform:uppercase; letter-spacing:1px;">Live Preview</span>
+        </div>
+    `;
+
+    dom.bioPreviewFrame.innerHTML = html + indicator;
 }
 
 // NEW: Extract HTML generation for reuse in Publish
